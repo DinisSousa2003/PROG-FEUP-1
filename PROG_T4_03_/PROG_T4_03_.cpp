@@ -10,7 +10,7 @@ void menuGameState(int Inst, string &gamestate){
 }
 
 //we can redo this function for strings too...
-void checkInput(int &variable){
+void checkInput(int &variable){  //maybe redo this function with a loop instead recursion
     cin >> variable;
     if (cin.fail()){
         if (cin.eof()){
@@ -36,11 +36,17 @@ void menu(int &inst) {        // menu function
 
 
 /* Options function ################################################ */
-void showRules() {
+void showRules(string& state) {
+    int back = 0;
+
     // inserir as regras deste jogo 
-    cout << "Rules: \n\n" << "I do not know what to say my friend!" << endl; 
-    int smth; 
-    checkInput(smth); // just to prevent infinite loop, to erase later.
+    cout << "Rules: \n\n" << "I do not know what to say my friend!" << endl;
+
+    while (back != 1) {
+        cout << "(Press '1' to exit rules)" << endl;  //maybe not "1" but works for now
+        checkInput(back); // check input
+        if (back == 1) { state = "menu"; }
+    }
 }
 
 void play() {
@@ -72,7 +78,7 @@ int main()   //main function
         
         if (game_state == "menu") { menu(Inst); menuGameState(Inst, game_state);}
 
-        else if (game_state == "rules") { showRules(); }
+        else if (game_state == "rules") { showRules(game_state); }
 
         else if (game_state == "play") { play(); }
 
