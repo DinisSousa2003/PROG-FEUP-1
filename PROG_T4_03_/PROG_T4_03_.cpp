@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+
+#include <stdlib.h>
+
 using namespace std; // makes all the code more readable
 
 
@@ -37,6 +40,7 @@ void menu(int &inst) {        // menu function
 
 /* Options function ################################################ */
 void showRules(string& state) {
+    system("CLS"); //clears the user's view
     int back = 0;
 
     // inserir as regras deste jogo 
@@ -49,10 +53,13 @@ void showRules(string& state) {
     }
 }
 
-void play() {
+void play(string& state) {
     int N_MAZE;
     cout << "Pick game Maze. Press 0 to return to the menu." << endl;
     checkInput(N_MAZE);     //need to check input
+    if (N_MAZE == 0) { state = "menu"; } //return to menu
+    //play
+
 }
 
 void exit(bool &running) {
@@ -80,12 +87,11 @@ int main()   //main function
 
         else if (game_state == "rules") { showRules(game_state); }
 
-        else if (game_state == "play") { play(); }
+        else if (game_state == "play") { play(game_state); }
 
         else if (game_state == "exit") { exit(running); }
 
 
         //readInst(Inst);
-    }
+    }//end main fuction
 }
-
