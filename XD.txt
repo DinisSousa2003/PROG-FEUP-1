@@ -1,4 +1,4 @@
-Dinis (commit 2)
+Dinis (31/04/2021)
 Changed variable inst to an integer, as we want to input integer in the menu.
 Created a prototype of a function that handles integer intputs.
 Function to go from inst to game_state.
@@ -7,10 +7,14 @@ I don't understand the purpose of readInst() function being on main(), as we rea
 Function exit works from the menu.
 N├úo sei o que dizer nas regras amigo Dinis!! - Changed this to english, acentos bugaite terminal.
 
-Malva: (commit 3)
+Malva: (31/04/2021)
 smth on showRules() erases
 On showRules() function added a back button ("1") to end the loop and return to menu, now we can go back and foward to path for rules
 Maybe redo check input function with a loop instead recursion, bc efficiency (not a big deal)
 Just an ideia but we could use -game_state- as a parameter to avoid use global variables
 Added - system("CLS") - with <stdlib.h>, that cleans all the the user view:
 https://mathbits.com/MathBits/CompSci/Introduction/clear.htm
+
+Dinis: (01/04/2021)
+function that reads map from file (still to improve)
+TO DO: get the tingys in the map_vector. (anyway, the code that is there can be deleted)

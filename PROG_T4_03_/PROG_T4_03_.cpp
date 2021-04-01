@@ -1,10 +1,40 @@
 #include <iostream>
 #include <string>
-
+#include <fstream> //handle files
 #include <stdlib.h>
+#include <vector> //vectors
 
 using namespace std; // makes all the code more readable
 
+void importMap(int num_map){
+    ifstream inStream;
+   
+    string file_name = "MAZE_" + to_string(num_map) + ".txt";
+    inStream.open(file_name);
+
+    //NO MAP WITH THIS NUMBER
+    if(inStream.fail()){
+        cerr << "There is no map with that number." << endl;
+        exit(1);
+    }
+    //WHEN EVERYTHING IS OKAY!
+    else{
+        //SIZE OF MAP
+        int height, lenght;
+        char k;
+        inStream >> height >> k >> lenght;
+
+        //initialized vector
+        vector<vector<char>> map_vec(height, vector<char> (lenght, ' '));
+
+        for(int l = 0; l < height; l++){
+            for(int c = 0; c < lenght; c++){
+                cout << "lol ";
+            }
+            cout << endl;
+        }
+    }
+}
 
 void menuGameState(int Inst, string &gamestate){
     if (Inst == 0) gamestate = "exit";
@@ -58,6 +88,7 @@ void play(string& state) {
     cout << "Pick game Maze. Press 0 to return to the menu." << endl;
     checkInput(N_MAZE);     //need to check input
     if (N_MAZE == 0) { state = "menu"; } //return to menu
+    else importMap(N_MAZE);
     //play
 
 }
