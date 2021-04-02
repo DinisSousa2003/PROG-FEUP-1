@@ -6,33 +6,43 @@
 
 using namespace std; // makes all the code more readable
 
-void importMap(int num_map){
+void readMap(vector <vector<char>> map, int n_lines,int n_colums) {     //outputs the map on the buffer
+    for (int l = 0; l < n_lines; l++) {
+        for (int c = 0; c < n_colums; c++) {cout << map[l][c];}
+        cout << endl;
+    }
+}
+
+vector<vector<char>> importMap(int num_map){
     ifstream inStream;
    
     string file_name = "MAZE_" + to_string(num_map) + ".txt";
     inStream.open(file_name);
 
     //NO MAP WITH THIS NUMBER
-    if(inStream.fail()){
+    if(inStream.fail()){                    //need a loop to check input
         cerr << "There is no map with that number." << endl;
         exit(1);
     }
     //WHEN EVERYTHING IS OKAY!
     else{
-        //SIZE OF MAP
+        //SIZE OF MAP //first line on map.txt
         int height, lenght;
         char k;
         inStream >> height >> k >> lenght;
 
         //initialized vector
         vector<vector<char>> map_vec(height, vector<char> (lenght, ' '));
-
-        for(int l = 0; l < height; l++){
-            for(int c = 0; c < lenght; c++){
-                cout << "lol ";
+        string lines;
+        getline(inStream, lines);
+        for(int line = 0; line < height; line++){
+            getline(inStream, lines);
+            for(int colum = 0; colum < lenght; colum++){
+                
+                map_vec[line][colum] = lines.at(colum);
             }
-            cout << endl;
         }
+        return map_vec;
     }
 }
 
@@ -61,6 +71,7 @@ void checkInput(int &variable){  //maybe redo this function with a loop instead 
 }
 
 void menu(int &inst) {        // menu function
+    system("CLS"); //clears the user's view
     cout << "Menu \nPlease choose an option" << endl;
     cout << "1) Rules \n2) Play \n0) Exit" << endl;
     checkInput(inst);   //need to check input
@@ -84,11 +95,37 @@ void showRules(string& state) {
 }
 
 void play(string& state) {
+    system("CLS"); //clears the user's view
     int N_MAZE;
     cout << "Pick game Maze. Press 0 to return to the menu." << endl;
     checkInput(N_MAZE);     //need to check input
-    if (N_MAZE == 0) { state = "menu"; } //return to menu
-    else importMap(N_MAZE);
+    if (N_MAZE == 0) { state = "menu"; return ; } //return to menu
+    vector<vector<char>> map = importMap(N_MAZE);
+
+    //play loop
+    bool game = true;
+    char action;
+    while (game) { 
+        system("CLS"); //clears the user's view
+        readMap(map, map.size(), map[0].size());
+
+        //game play start here
+        cout << "Take action: (press 'h' to get help)  ";  // 'h' doenst work right now
+
+        cin >> action;               // need to check input (char)
+        cout << endl; 
+
+                //movement, win and loss condition
+        switch (action)
+        {case 'q' || 'Q':
+            //
+            break;
+        default:
+            break;
+        }
+        
+    }
+    
     //play
 
 }
