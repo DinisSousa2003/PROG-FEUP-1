@@ -4,11 +4,84 @@
 #include <stdlib.h>
 #include <vector> //vectors
 
+
 using namespace std; // makes all the code more readable
 
-void readMap(vector <vector<char>> map, int n_lines,int n_colums) {     //outputs the map on the buffer
+void help() {  //outputs possible actions
+    cout << "insert possible actions here (we'll do it later)\n"; //we do it later 
+}
+
+void checkErrors(int correct) {
+    if (correct == 0){}
+    else if (correct == 1) { cout << "chilla boy u'll die" << endl; }  //text in case certain death
+    else if (correct == 2){cout << "Insert a valid input this time morron" << endl; } //in case the user is schtoopid
+}
+
+void actionCheck(vector <vector<char>> map, char action, vector<int> pos, bool &game, string &state, bool &move, int &correct ,int &l, int &c) { //check if player can move
+    correct = 1;
+    move = false;
+    switch (tolower(action)) {
+    case 'q': 
+        if (tolower(map[pos[0] - 1][pos[1] - 1]) != 'r' && map[pos[0] - 1][pos[1] - 1] != '*') { move = true; l = -1; c = -1; }
+        break;
+
+    case 'w':
+        if (tolower(map[pos[0] - 1][pos[1]]) != 'r' && map[pos[0] - 1][pos[1]] != '*') { move = true; l = -1; c = 0;}
+        break;
+
+    case 'e':
+        if (tolower(map[pos[0] - 1][pos[1] + 1]) != 'r' && map[pos[0] - 1][pos[1]+1] != '*') { move = true; l = -1; c = 1;}
+        break;
+
+    case 'a':
+        if (tolower(map[pos[0]][pos[1] - 1]) != 'r' && map[pos[0]][pos[1] - 1] != '*') { move = true; l = 0; c = -1;}
+        break;
+    case 's':
+        if (tolower(map[pos[0]][pos[1]]) != 'r' && map[pos[0]][pos[1]] != '*') {   move = true; l = 0; c = 0;}
+        break;
+
+    case 'd':
+        if (tolower(map[pos[0]][pos[1] + 1]) != 'r' && map[pos[0]][pos[1] + 1] != '*') { move = true; l = 0; c = 1; }
+        break;
+
+    case 'z':
+        if (tolower(map[pos[0] + 1][pos[1] - 1]) != 'r' && map[pos[0] + 1][pos[1] - 1] != '*') { move = true; l = -1; c = -1;}
+        break;
+
+    case 'x':
+        if (tolower(map[pos[0] + 1][pos[1]]) != 'r' && map[pos[0] + 1][pos[1]] != '*') { move = true; l = -1; c = 0; }
+        break;
+
+    case 'c':
+        if (tolower(map[pos[0] + 1][pos[1] + 1]) != 'r' && map[pos[0] + 1][pos[1] + 1] != '*') { move = true; l = -1; c = 1; }
+        break;
+
+    case '0':
+        game = false;
+        move = true;
+        state = "menu";
+        correct = 0;
+        break;
+    case 'h':
+        help();
+        move = false;
+        correct = 0;
+        break;
+    default:
+        move = false; //change needed
+        correct = 2;
+        break;
+    }
+}
+
+void readMap(vector <vector<char>> map, int n_lines,int n_colums,vector <int> &player_pos, vector <vector<int>>& robots_pos) {     //outputs the map on the buffer
+
     for (int l = 0; l < n_lines; l++) {
-        for (int c = 0; c < n_colums; c++) {cout << map[l][c];}
+        for (int c = 0; c < n_colums; c++) { 
+            cout << map[l][c];
+            if (tolower(map[l][c]) == 'h') { player_pos = { l , c }; }               // take player position
+            else if (tolower(map[l][c]) == 'r') { robots_pos.push_back( { l, c }); } // take robots position
+        }
         cout << endl;
     }
 }
@@ -16,7 +89,7 @@ void readMap(vector <vector<char>> map, int n_lines,int n_colums) {     //output
 vector<vector<char>> importMap(int num_map){
     ifstream inStream;
    
-    string file_name = "MAZE_" + to_string(num_map) + ".txt";
+    string file_name = "MAPS/MAZE_" + to_string(num_map) + ".txt";
     inStream.open(file_name);
 
     //NO MAP WITH THIS NUMBER
@@ -71,7 +144,7 @@ void checkInput(int &variable){  //maybe redo this function with a loop instead 
 }
 
 void menu(int &inst) {        // menu function
-    system("CLS"); //clears the user's view
+    //system("CLS"); //clears the user's view
     cout << "Menu \nPlease choose an option" << endl;
     cout << "1) Rules \n2) Play \n0) Exit" << endl;
     checkInput(inst);   //need to check input
@@ -81,48 +154,63 @@ void menu(int &inst) {        // menu function
 
 /* Options function ################################################ */
 void showRules(string& state) {
-    system("CLS"); //clears the user's view
-    int back = 0;
+    //system("CLS"); //clears the user's view
+    int back = 1;
 
     // inserir as regras deste jogo 
     cout << "Rules: \n\n" << "I do not know what to say my friend!" << endl;
 
-    while (back != 1) {
-        cout << "(Press '1' to exit rules)" << endl;  //maybe not "1" but works for now
+    while (back != 0) {
+        cout << "(Press '0' to exit rules)" << endl;  //maybe not "0" but works for now
         checkInput(back); // check input
-        if (back == 1) { state = "menu"; }
+        if (back == 0) { state = "menu"; }
     }
 }
 
 void play(string& state) {
-    system("CLS"); //clears the user's view
+    //system("CLS"); //clears the user's view
     int N_MAZE;
     cout << "Pick game Maze. Press 0 to return to the menu." << endl;
     checkInput(N_MAZE);     //need to check input
     if (N_MAZE == 0) { state = "menu"; return ; } //return to menu
+
     vector<vector<char>> map = importMap(N_MAZE);
+    vector<vector<int>> robots_pos;
+    vector <int> player_pos;
 
     //play loop
     bool game = true;
-    char action;
+    
     while (game) { 
-        system("CLS"); //clears the user's view
-        readMap(map, map.size(), map[0].size());
+        //system("CLS"); //clears the user's view
+        readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
 
         //game play start here
         cout << "Take action: (press 'h' to get help)  ";  // 'h' doenst work right now
 
-        cin >> action;               // need to check input (char)
-        cout << endl; 
+        char action; 
+        bool done = false; //cin loop
+        int new_l, new_c;
+        bool move; //checks if he can moves
+        int correct; //
 
-                //movement, win and loss condition
-        switch (action)
-        {case 'q' || 'Q':
-            //
-            break;
-        default:
-            break;
+        //check for input
+        while (!done){
+            cin >> action;
+            actionCheck(map, action, player_pos,game,state , move,correct, new_l, new_c );
+            
+            if (move) done = true;
+            else{
+                //system("CLS"); //clears the user's view
+                readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+                checkErrors(correct);
+            }
         }
+    if (!game) break; //checks if it is to continue 
+     
+        
+        
+        
         
     }
     
@@ -163,3 +251,4 @@ int main()   //main function
         //readInst(Inst);
     }//end main fuction
 }
+
