@@ -11,6 +11,13 @@ void help() {  //outputs possible actions
     cout << "insert possible actions here (we'll do it later)\n"; //we do it later 
 }
 
+void switch_pos(char &a, char &b) {//switch char position on map
+    int temp;
+    temp = a;
+    a = b;
+    b = temp;
+}
+
 void checkErrors(int correct) {
     if (correct == 0){}
     else if (correct == 1) { cout << "chilla boy u'll die" << endl; }  //text in case certain death
@@ -45,22 +52,22 @@ void actionCheck(vector <vector<char>> map, char action, vector<int> pos, bool &
         break;
 
     case 'z':
-        if (tolower(map[pos[0] + 1][pos[1] - 1]) != 'r' && map[pos[0] + 1][pos[1] - 1] != '*') { move = true; l = -1; c = -1;}
+        if (tolower(map[pos[0] + 1][pos[1] - 1]) != 'r' && map[pos[0] + 1][pos[1] - 1] != '*') { move = true; l = 1; c = -1;}
         break;
 
     case 'x':
-        if (tolower(map[pos[0] + 1][pos[1]]) != 'r' && map[pos[0] + 1][pos[1]] != '*') { move = true; l = -1; c = 0; }
+        if (tolower(map[pos[0] + 1][pos[1]]) != 'r' && map[pos[0] + 1][pos[1]] != '*') { move = true; l = 1; c = 0; }
         break;
 
     case 'c':
-        if (tolower(map[pos[0] + 1][pos[1] + 1]) != 'r' && map[pos[0] + 1][pos[1] + 1] != '*') { move = true; l = -1; c = 1; }
+        if (tolower(map[pos[0] + 1][pos[1] + 1]) != 'r' && map[pos[0] + 1][pos[1] + 1] != '*') { move = true; l = 1; c = 1; }
         break;
 
     case '0':
         game = false;
         move = true;
         state = "menu";
-        correct = 0;
+        //correct = 0;
         break;
     case 'h':
         help();
@@ -181,6 +188,12 @@ void play(string& state) {
     //play loop
     bool game = true;
     
+    char action;
+    bool done; //cin loop
+    int new_l, new_c;
+    bool move; //checks if he can moves
+    int correct; //
+
     while (game) { 
         //system("CLS"); //clears the user's view
         readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
@@ -188,18 +201,14 @@ void play(string& state) {
         //game play start here
         cout << "Take action: (press 'h' to get help)  ";  // 'h' doenst work right now
 
-        char action; 
-        bool done = false; //cin loop
-        int new_l, new_c;
-        bool move; //checks if he can moves
-        int correct; //
+        done = false;
 
         //check for input
         while (!done){
             cin >> action;
             actionCheck(map, action, player_pos,game,state , move,correct, new_l, new_c );
             
-            if (move) done = true;
+            if (move) { done = true; }
             else{
                 //system("CLS"); //clears the user's view
                 readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
@@ -208,7 +217,9 @@ void play(string& state) {
         }
     if (!game) break; //checks if it is to continue 
      
-        
+    switch_pos(map[player_pos[0]][player_pos[1]], map[player_pos[0] + new_l][player_pos[1] + new_c]);  //switch position between player(H) and the new position
+    //finished player movement
+
         
         
         
