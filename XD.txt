@@ -26,3 +26,11 @@ changed importMap, now returns a map vector instead of void
 applied read.map() in play() fuction
 system("CLS") now clears buffer when menu, rules or play functions are called
 started game play <search for 'game play' and u'll see it>, not mutch bc is late 
+
+Both: (05/05/2021)
+Reading map now works both for XX and X format.
+Input game action improved.
+TO DO: 
+->implement function to work with cntrl-z
+->input must work only one at a time (no premoves and shit)
+->start working on nerdy robot movement

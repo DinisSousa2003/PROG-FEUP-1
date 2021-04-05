@@ -144,27 +144,18 @@ void menuGameState(int Inst, string &gamestate){
 
 //we can redo this function for strings too...
 void checkInput(int &variable){  //maybe redo this function with a loop instead recursion
-    bool done = false; 
-
-    while(!done){
-        cin >> variable;
-        if (cin.fail()){
-            if (cin.eof()){
-                cin.clear(); //clears error flags
-                cin.ignore(10000, '\n'); //clears buffer
-                cout << "errru AHHHH" << endl;
-                //decide what to do if it gets to the end of the file
-            }
-            else{
-                cin.clear(); //clears error flags
-                cin.ignore(10000, '\n'); //clears buffer
-                cout << "You wrote something invalid, we were looking for an integer!" << endl;
-                checkInput(variable); //if it's wrong, it asks again
-            }
+    cin >> variable;
+    if (cin.fail()){
+        if (cin.eof()){
+            cin.clear(); //clears error flags
+            cin.ignore(10000, '\n'); //clears buffer
+            cout << "FATAL ERROR AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH";
         }
         else{
-            cin.ignore(10000, '\n');
-            done = true;
+            cin.clear(); //clears error flags
+            cin.ignore(10000, '\n'); //clears buffer
+            cout << "You wrote something invalid, we were looking for an integer!" << endl;
+            checkInput(variable); //if it's wrong, it asks again
         }
     }
 }
@@ -261,11 +252,11 @@ void exit(bool &running) {
     running = false;
 }
 
-//void readInst(string& inst) {           // funcion that reads intruction for the nex iteration of the loop
-//    cout << "Next instruction" << endl; // standart text for read instruction, we must change that
-//    cin >> inst;                        //need to check input
-//    cout << endl;
-//}
+// void readInst(string& inst) {           // funcion that reads intruction for the nex iteration of the loop
+//     cout << "Next instruction" << endl; // standart text for read instruction, we must change that
+//     cin >> inst;                        //need to check input
+//     cout << endl;
+// }
 
 
 int main()   //main function
