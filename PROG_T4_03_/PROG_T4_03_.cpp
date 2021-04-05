@@ -3,6 +3,7 @@
 #include <fstream> //handle files
 #include <stdlib.h>
 #include <vector> //vectors
+#include <iomanip>
 
 
 using namespace std; // makes all the code more readable
@@ -93,10 +94,19 @@ void readMap(vector <vector<char>> map, int n_lines,int n_colums,vector <int> &p
     }
 }
 
+void pad_str(string &num_map, int spaces_to_fill = 0, char filling = '0'){
+    
+    if (spaces_to_fill > num_map.length())
+      num_map.insert(num_map.begin(), spaces_to_fill - num_map.length(), filling);
+}
+
 vector<vector<char>> importMap(int num_map){
     ifstream inStream;
+
+    string str_num_map = to_string(num_map);
+    pad_str(str_num_map, 2, '0');
    
-    string file_name = "MAPS/MAZE_" + to_string(num_map) + ".txt";
+    string file_name = "MAPS/MAZE_" + str_num_map + ".txt";
     inStream.open(file_name);
 
     //NO MAP WITH THIS NUMBER
