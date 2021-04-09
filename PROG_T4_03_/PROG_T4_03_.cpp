@@ -9,7 +9,13 @@
 using namespace std; // makes all the code more readable
 
 void help() {  //outputs possible actions
-    cout << "insert possible actions here (we'll do it later)\n"; //we do it later 
+    cout << "Movement: \n\n" << "NW: Q\t\tN: W\t\tNE: E\n"
+    "W: A\t\tSTAY: S\t\tE: D\n"
+    "SW: Z\t\tS: X\t\tSE: C\n" << endl;
+
+    cout << "Other commands: \n\n" << "0: Return to menu\n"
+    "h: Quick help\n"
+    "CRTL-Z (or CRTL-D on Linux): End game\n" << endl;
 }
 
 void switch_pos(char &a, char &b) {//switch char position on map
@@ -175,7 +181,19 @@ void showRules(string& state) {
     int back = 1;
 
     // inserir as regras deste jogo 
-    cout << "Rules: \n\n" << "I do not know what to say my friend!" << endl;
+    cout << "Rules: \n\n" << "The player is placed in a maze made up of high-voltage fences and posts. There are also some interceptor robots that \n"
+"will try to destroy the player. If the player touches the maze or any of these robots, that is the end of the game (and\n"
+"the player!). The robots are also destroyed when they touch the fences/posts or when they collide with each other.\n"
+"Every time the player moves in any direction (horizontally, vertically, or diagonally) to a contiguous cell, each robot\n"
+"moves one cell closer to the new player's location, in whichever direction is the shortest path. The robots have no\n"
+"vision sensors but they have an accurate odour sensor that allows them to follow the player!\n"
+"There is one hope: make the robots hit the maze or each other. If all of them are destroyed, the player wins.\n " << endl;
+
+    cout << "Movement: \n\n" << "NW: Q\t\tN: W\t\tNE: E\n"
+    "W: A\t\tSTAY: S\t\tE: D\n"
+    "SW: Z\t\tS: X\t\tSE: C\n" << endl;
+
+    cout << "Useful information: \n\n" << "You can leave the game at any given moment by pressing CTRL-Z (or CTRL-D if you are on Linux)\n" << endl;
 
     while (back != 0) {
         cout << "(Press '0' to exit rules)" << endl;  //maybe not "0" but works for now
