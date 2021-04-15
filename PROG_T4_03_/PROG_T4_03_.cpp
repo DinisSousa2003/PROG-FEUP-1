@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <vector> //vectors
 #include <iomanip>
+#include <cmath> //pow and sqrt
 
 
 using namespace std; // makes all the code more readable
@@ -27,7 +28,7 @@ void switch_pos(char &a, char &b) {//switch char position on map
 
 void checkErrors(int correct) {
     if (correct == 0){}
-    else if (correct == 1) { cout << "chilla boy u'll die" << endl; }  //text in case certain death
+    else if (correct == 1) { cout << "U cannot go against the dead robots, choose anotha" << endl; }  //text in case certain death
     else if (correct == 2){cout << "Insert a valid input this time morron" << endl; } //in case the user is schtoopid
 }
 
@@ -37,44 +38,61 @@ void actionCheck(vector <vector<char>> map, char action, vector<int> pos, bool &
     switch (tolower(action)) {
     case 'q': 
         if (tolower(map[pos[0] - 1][pos[1] - 1]) != 'r' && map[pos[0] - 1][pos[1] - 1] != '*') { move = true; l = -1; c = -1; }
+        else if((map[pos[0] - 1][pos[1] - 1]) == 'r') {move = false; correct = 1;}
+                else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
         break;
 
     case 'w':
         if (tolower(map[pos[0] - 1][pos[1]]) != 'r' && map[pos[0] - 1][pos[1]] != '*') { move = true; l = -1; c = 0;}
+        else if((map[pos[0] - 1][pos[1]]) == 'r') {move = false; correct = 1;}
+        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
         break;
 
     case 'e':
         if (tolower(map[pos[0] - 1][pos[1] + 1]) != 'r' && map[pos[0] - 1][pos[1]+1] != '*') { move = true; l = -1; c = 1;}
+        else if((map[pos[0] - 1][pos[1] + 1]) == 'r') {move = false; correct = 1;}
+        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
         break;
 
     case 'a':
         if (tolower(map[pos[0]][pos[1] - 1]) != 'r' && map[pos[0]][pos[1] - 1] != '*') { move = true; l = 0; c = -1;}
+        else if((map[pos[0]][pos[1] - 1]) == 'r') {move = false; correct = 1;}
+        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
         break;
     case 's':
         if (tolower(map[pos[0]][pos[1]]) != 'r' && map[pos[0]][pos[1]] != '*') {   move = true; l = 0; c = 0;}
+        else if((map[pos[0]][pos[1]]) == 'r') {move = false; correct = 1;}
+        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
         break;
 
     case 'd':
         if (tolower(map[pos[0]][pos[1] + 1]) != 'r' && map[pos[0]][pos[1] + 1] != '*') { move = true; l = 0; c = 1; }
+        else if((map[pos[0]][pos[1] + 1]) == 'r') {move = false; correct = 1;}
+        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
         break;
 
     case 'z':
         if (tolower(map[pos[0] + 1][pos[1] - 1]) != 'r' && map[pos[0] + 1][pos[1] - 1] != '*') { move = true; l = 1; c = -1;}
+        else if((map[pos[0] + 1][pos[1] - 1]) == 'r') {move = false; correct = 1;}
+        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
         break;
 
     case 'x':
         if (tolower(map[pos[0] + 1][pos[1]]) != 'r' && map[pos[0] + 1][pos[1]] != '*') { move = true; l = 1; c = 0; }
+        else if((map[pos[0] + 1][pos[1]]) == 'r') {move = false; correct = 1;}
+        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
         break;
 
     case 'c':
         if (tolower(map[pos[0] + 1][pos[1] + 1]) != 'r' && map[pos[0] + 1][pos[1] + 1] != '*') { move = true; l = 1; c = 1; }
+        else if((map[pos[0] + 1][pos[1] + 1]) == 'r') {move = false; correct = 1;}
+        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
         break;
 
     case '0':
         game = false;
         move = true;
         state = "menu";
-        //correct = 0;
         break;
     case 'h':
         help();
@@ -82,7 +100,7 @@ void actionCheck(vector <vector<char>> map, char action, vector<int> pos, bool &
         correct = 0;
         break;
     default:
-        move = false; //change needed
+        move = false; 
         correct = 2;
         break;
     }
@@ -148,8 +166,7 @@ void menuGameState(int Inst, string &gamestate){
     if (Inst == 2) gamestate = "play";
 }
 
-//we can redo this function for strings too...
-void checkInput(int &variable){  //maybe redo this function with a loop instead recursion
+void checkInput(int &variable){ 
     cin >> variable;
     if (cin.fail()){
         if (cin.eof()){
@@ -224,7 +241,6 @@ void play(string& state) {
     int correct; //
 
     while (game) { 
-        //system("CLS"); //clears the user's view
         readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
 
         //game play start here
@@ -242,12 +258,11 @@ void play(string& state) {
             }
             else{
             action_char = action.at(0);
-            actionCheck(map, action_char, player_pos,game,state , move,correct, new_l, new_c );
+            actionCheck(map, action_char, player_pos, game, state , move, correct, new_l, new_c );
             }
             
             if (move) { done = true; }
             else{
-                //system("CLS"); //clears the user's view
                 readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
                 checkErrors(correct);
             }

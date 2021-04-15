@@ -34,3 +34,7 @@ TO DO:
 ->implement function to work with cntrl-z
 ->input must work only one at a time (no premoves and shit)
 ->start working on nerdy robot movement
+
+Dinis: (15/04/2021)
+Rules done (but may be improved futurely), diying and not correct moves fixed
+Still to do the robot movement and the ctrlz stuff
