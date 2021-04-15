@@ -106,19 +106,30 @@ void actionCheck(vector <vector<char>> map, char action, vector<int> pos, bool &
     }
 }
 
-void readMap(vector <vector<char>> map, int n_lines,int n_colums,vector <int> &player_pos, vector <vector<int>>& robots_pos) {     //outputs the map on the buffer
-
+void outMap(vector <vector<char>> map, int n_lines, int n_colums) { //outputs the map on the buffer
     for (int l = 0; l < n_lines; l++) {
-        for (int c = 0; c < n_colums; c++) { 
+        for (int c = 0; c < n_colums; c++) {
             cout << map[l][c];
-            if (tolower(map[l][c]) == 'h') { player_pos = { l , c }; }               // take player position
-            else if (tolower(map[l][c]) == 'r') { robots_pos.push_back( { l, c }); } // take robots position
         }
         cout << endl;
     }
 }
 
-void pad_str(string &num_map, int spaces_to_fill = 0, char filling = '0'){
+void readMap(vector <vector<char>> map, int n_lines,int n_colums,vector <int> &player_pos, vector <vector<int>>& robots_pos) {     //only reads the map
+
+    for (int l = 0; l < n_lines; l++) {
+        for (int c = 0; c < n_colums; c++) { 
+            //cout << map[l][c];
+            if (tolower(map[l][c]) == 'h') { player_pos = { l , c }; }               // take player position
+            else if (tolower(map[l][c]) == 'r') { robots_pos.push_back( { l, c }); } // take robots position
+        }
+        //cout << endl;
+    }
+    //outMap(map, n_lines, n_colums);
+}
+
+
+void pad_str(string &num_map, int spaces_to_fill = 0, char filling = '0'){ 
     
     if (spaces_to_fill > num_map.length())
       num_map.insert(num_map.begin(), spaces_to_fill - num_map.length(), filling);
@@ -238,10 +249,16 @@ void play(string& state) {
     bool done; //cin loop
     int new_l, new_c;
     bool move; //checks if he can moves
-    int correct; //
+    int correct; 
+
+    readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+    vector <vector<int>> R_pos = robots_pos;  // ordered pair (lines, colum)
+    vector <bool> RLivesMatter;
+    for (int c = 0; c < robots_pos.size(); c++){RLivesMatter.push_back(true);}
 
     while (game) { 
         readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+        outMap(map, map.size(), map[0].size());
 
         //game play start here
         cout << "Take action: (press 'h' to get help)  ";  // 'h' doenst work right now
@@ -263,17 +280,38 @@ void play(string& state) {
             
             if (move) { done = true; }
             else{
-                readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+                //readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+                outMap(map, map.size(), map[0].size());
                 checkErrors(correct);
             }
         }
     if (!game) break; //checks if it is to continue 
-     
+ 
     switch_pos(map[player_pos[0]][player_pos[1]], map[player_pos[0] + new_l][player_pos[1] + new_c]);  //switch position between player(H) and the new position
     //finished player movement
+    
+    for (int ID = 0; ID < RLivesMatter.size(); ID++) {
+        if (player_pos[0] == R_pos[ID][0]) { //check if they are in the same line
+            if (player_pos[1] < R_pos[ID][1]) { action_char = 'a'; }
+            else { action_char = 'd'; }
+        }  
 
-        
-        
+        else if (player_pos[1] == R_pos[ID][1]) { //check if they are in the same colum
+            if (player_pos[0] > R_pos[ID][0]) { action_char = 'x'; }
+            else { action_char = 'w'; }
+        }  
+        else if (player_pos[0] > R_pos[ID][0]){
+            if (player_pos[1] < R_pos[ID][1]){ action_char = 'q';}
+            else {action_char = 'e';}
+        }
+        else{
+            if (player_pos[1] < R_pos[ID][1]){ action_char = 'z';}
+            else {action_char = 'c';}
+        }
+    }
+    
+
+
         
     }
     
