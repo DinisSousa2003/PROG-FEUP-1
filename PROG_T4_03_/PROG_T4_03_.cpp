@@ -30,69 +30,71 @@ void checkErrors(int correct) {
     if (correct == 0){}
     else if (correct == 1) { cout << "U cannot go against the dead robots, choose anotha" << endl; }  //text in case certain death
     else if (correct == 2){cout << "Insert a valid input this time morron" << endl; } //in case the user is schtoopid
+    else if (correct == 3){cout << "You dead u nerd" << endl;}
 }
 
 void actionCheck(vector <vector<char>> map, char action, vector<int> pos, bool &game, string &state, bool &move, int &correct ,int &l, int &c) { //check if player can move
-    correct = 1;
+    correct = 0;
     move = false;
     switch (tolower(action)) {
     case 'q': 
-        if (tolower(map[pos[0] - 1][pos[1] - 1]) != 'r' && map[pos[0] - 1][pos[1] - 1] != '*') { move = true; l = -1; c = -1; }
+        if (tolower(map[pos[0] - 1][pos[1] - 1]) != 'r' && map[pos[0] - 1][pos[1] - 1] != '*') { move = true; l = -1; c = -1;}
         else if((map[pos[0] - 1][pos[1] - 1]) == 'r') {move = false; correct = 1;}
-                else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
+        else { move = true; game = false; state = "menu"; correct = 3; }
         break;
 
     case 'w':
-        if (tolower(map[pos[0] - 1][pos[1]]) != 'r' && map[pos[0] - 1][pos[1]] != '*') { move = true; l = -1; c = 0;}
+        if (tolower(map[pos[0] - 1][pos[1]]) != 'r' && map[pos[0] - 1][pos[1]] != '*') { move = true; l = -1; c = 0; }
         else if((map[pos[0] - 1][pos[1]]) == 'r') {move = false; correct = 1;}
-        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
+        else {move = true; game = false; state = "menu"; correct = 3 ;}
         break;
 
     case 'e':
         if (tolower(map[pos[0] - 1][pos[1] + 1]) != 'r' && map[pos[0] - 1][pos[1]+1] != '*') { move = true; l = -1; c = 1;}
         else if((map[pos[0] - 1][pos[1] + 1]) == 'r') {move = false; correct = 1;}
-        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
+        else {move = true; game = false; state = "menu"; correct = 3 ;}
         break;
 
     case 'a':
         if (tolower(map[pos[0]][pos[1] - 1]) != 'r' && map[pos[0]][pos[1] - 1] != '*') { move = true; l = 0; c = -1;}
         else if((map[pos[0]][pos[1] - 1]) == 'r') {move = false; correct = 1;}
-        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
+        else {move = true; game = false; state = "menu"; correct = 3; }
         break;
     case 's':
         if (tolower(map[pos[0]][pos[1]]) != 'r' && map[pos[0]][pos[1]] != '*') {   move = true; l = 0; c = 0;}
         else if((map[pos[0]][pos[1]]) == 'r') {move = false; correct = 1;}
-        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
+        else { move = true; game = false; state = "menu"; correct = 3; }
         break;
 
     case 'd':
         if (tolower(map[pos[0]][pos[1] + 1]) != 'r' && map[pos[0]][pos[1] + 1] != '*') { move = true; l = 0; c = 1; }
         else if((map[pos[0]][pos[1] + 1]) == 'r') {move = false; correct = 1;}
-        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
+        else { move = true; game = false; state = "menu"; correct = 3; }
         break;
 
     case 'z':
         if (tolower(map[pos[0] + 1][pos[1] - 1]) != 'r' && map[pos[0] + 1][pos[1] - 1] != '*') { move = true; l = 1; c = -1;}
         else if((map[pos[0] + 1][pos[1] - 1]) == 'r') {move = false; correct = 1;}
-        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
+        else { move = true; game = false; state = "menu"; correct = 3; }
         break;
 
     case 'x':
         if (tolower(map[pos[0] + 1][pos[1]]) != 'r' && map[pos[0] + 1][pos[1]] != '*') { move = true; l = 1; c = 0; }
         else if((map[pos[0] + 1][pos[1]]) == 'r') {move = false; correct = 1;}
-        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
+        else { move = true; game = false; state = "menu"; correct = 3; }
         break;
 
     case 'c':
         if (tolower(map[pos[0] + 1][pos[1] + 1]) != 'r' && map[pos[0] + 1][pos[1] + 1] != '*') { move = true; l = 1; c = 1; }
         else if((map[pos[0] + 1][pos[1] + 1]) == 'r') {move = false; correct = 1;}
-        else {move = true; game = false; state = "menu";  cout << "You died u idiot" << endl; }
+        else { move = true; game = false; state = "menu"; correct = 3; }
         break;
 
     case '0':
         game = false;
         move = true;
         state = "menu";
+        correct = 0;
         break;
     case 'h':
         help();
@@ -273,6 +275,7 @@ void play(string& state) {
                 correct = 2;
                 move = false;
             }
+            
             else{
             action_char = action.at(0);
             actionCheck(map, action_char, player_pos, game, state , move, correct, new_l, new_c );
@@ -282,8 +285,8 @@ void play(string& state) {
             else{
                 //readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
                 outMap(map, map.size(), map[0].size());
-                checkErrors(correct);
             }
+            checkErrors(correct);
         }
     if (!game) break; //checks if it is to continue 
  
@@ -308,11 +311,10 @@ void play(string& state) {
             if (player_pos[1] < R_pos[ID][1]){ action_char = 'z';}
             else {action_char = 'c';}
         }
+
+        actionCheck(map, action_char, R_pos[ID], game, state, move, correct, new_l, new_c);
+
     }
-    
-
-
-        
     }
     
     //play
