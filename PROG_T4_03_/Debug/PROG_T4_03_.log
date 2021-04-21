@@ -1,0 +1,5 @@
+﻿  PROG_T4_03_.cpp
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(136,24): warning C4018: '>': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(259,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(296,25): warning C4018: '<': incompatibilidade de signed/unsigned
+  PROG_T4_03_.vcxproj -> C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\Debug\PROG_T4_03_.exe
