@@ -18,9 +18,9 @@ void help() {  //outputs possible actions
     "CRTL-Z (or CRTL-D on Linux): End game\n" << endl;
 }
 
-void switch_pos(char& start, char& end) {//switch char position on map
+bool switch_pos(char& start, char& end) {//switch char position on map
     bool dead = true;
-    if (start != end && tolower(start) == 'h') {
+    if (start != end){// && tolower(start) == 'h') {
         if (end == '*') {
             end = tolower(start);
         }
@@ -37,6 +37,28 @@ void switch_pos(char& start, char& end) {//switch char position on map
         }
         start = ' ';
     }
+    return dead;
+}
+
+char find_him(vector <int> player_pos, vector <int> R_pos){
+    char action;
+    if (player_pos[0] == R_pos[0]) { //check if they are in the same line
+       if (player_pos[1] < R_pos[1]) { action = 'a'; }
+       else { action = 'd'; }
+    }
+    else if (player_pos[1] == R_pos[1]) { //check if they are in the same colum
+            if (player_pos[0] > R_pos[0]) { action= 'x'; }
+            else { action = 'w'; }
+    }
+    else if (player_pos[0] > R_pos[0]) {
+            if (player_pos[1] < R_pos[1]) { action= 'q'; }
+            else { action = 'e'; }
+    }
+    else {
+            if (player_pos[1] < R_pos[1]) { action = 'z'; }
+            else { action = 'c'; }
+    }
+    return action;
 }
 
 void checkErrors(int correct) {
@@ -45,7 +67,7 @@ void checkErrors(int correct) {
     else if (correct == 2){cout << "Insert a valid input this time morron" << endl; } //in case the user is schtoopid
 }
 
-void actionCheck(vector <vector<char>> map, char action, vector<int> pos, bool &game, string &state, bool &move, int &correct ,int &l, int &c) { //check if player can move
+void actionCheck(vector <vector<char>> map, char action,  bool &game, string &state, bool &move, int &correct ,int &l, int &c) { //check if player can move
     correct = 1;
     move = true;
     switch (tolower(action)) {
@@ -101,6 +123,14 @@ void actionCheck(vector <vector<char>> map, char action, vector<int> pos, bool &
         break;
     }
     /*if (tolower(map[pos[0] + l][pos[1] + c]) == 'r' || map[pos[0] + l][pos[1] + c] == '*') { bool dead = true; }*/
+}
+
+void duplicate(vector <bool> &life, vector <vector<int>> pos, int ID) {
+    for (int c = 0; c < pos.size(); c++) {
+        if (pos[ID] == pos[c] && c != ID) {
+            life[c] = false;
+        }
+    }
 }
 
 void outMap(vector <vector<char>> map, int n_lines, int n_colums) { //outputs the map on the buffer
@@ -246,9 +276,15 @@ void play(string& state) {
     bool move; //checks if he can moves
     int correct; //
 
-    while (game) { 
+    readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+    vector <vector<int>> R_pos = robots_pos;  // ordered pair (lines, colum)
+    vector <bool> RLivesMatter;
+    for (int c = 0; c < robots_pos.size(); c++) { RLivesMatter.push_back(true); }
+
+    while (game) {
         //system("CLS"); //clears the user's view
-        readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+        //readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+        outMap(map, map.size(), map[0].size());
 
         //game play start here
         cout << "Take action: (press 'h' to get help)  ";  // 'h' doenst work right now
@@ -256,37 +292,47 @@ void play(string& state) {
         move = false;
 
         //check for input
-        while (!move){
+        while (!move) {
             cin >> action;
             cin.ignore(10000, '\n');
-            if (action.length() > 1){
+            if (action.length() > 1) {
                 correct = 2;
                 move = false;
             }
-            else{
-            action_char = action.at(0);
-            actionCheck(map, action_char, player_pos,game,state , move,correct, new_l, new_c );
+            else {
+                action_char = action.at(0);
+                actionCheck(map, action_char, game, state, move, correct, new_l, new_c);
             }
-            
+
             /*if (move) { done = true; }*/
-            if (!move){
+            if (!move) {
                 //system("CLS"); //clears the user's view
-                readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+                //readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+                outMap(map, map.size(), map[0].size());
                 checkErrors(correct);
             }
         }
-    if (!game) break; //checks if it is to continue 
-     
-    switch_pos(map[player_pos[0]][player_pos[1]], map[player_pos[0] + new_l][player_pos[1] + new_c]);  //switch position between player(H) and the new position
-    //finished player movement
+        if (!game) break; //checks if it is to continue 
 
-        
-        
-        
+        switch_pos(map[player_pos[0]][player_pos[1]], map[player_pos[0] + new_l][player_pos[1] + new_c]);  //switch position between player(H) and the new position
+        readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+        //finished player movement
+
+        for (int ID = 0; ID < RLivesMatter.size(); ID++) {
+            if (RLivesMatter[ID]) {
+                actionCheck(map, find_him(player_pos, R_pos[ID]), game, state, move, correct, new_l, new_c);
+                if (switch_pos(map[R_pos[ID][0]][R_pos[ID][1]], map[R_pos[ID][0] + new_l][R_pos[ID][1] + new_c])) {
+                    RLivesMatter[ID] = false;
+                }
+                if (!RLivesMatter[ID]) {
+                    duplicate(RLivesMatter, R_pos, ID);
+                }
+            }
+        }
+
+        //play
+
     }
-    
-    //play
-
 }
 
 void exit(bool &running) {
