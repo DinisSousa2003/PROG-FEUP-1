@@ -8,6 +8,10 @@
 
 using namespace std; // makes all the code more readable
 
+void outMap(vector <vector<char>> map, int n_lines, int n_colums);
+
+
+
 void help() {  //outputs possible actions
     cout << "Movement: \n\n" << "NW: Q\t\tN: W\t\tNE: E\n"
     "W: A\t\tSTAY: S\t\tE: D\n"
@@ -20,26 +24,29 @@ void help() {  //outputs possible actions
 
 bool switch_pos(char& start, char& end) {//switch char position on map
     bool dead = true;
-    if (start != end){// && tolower(start) == 'h') {
-        if (end == '*') {
-            end = tolower(start);
+
+    //The if is used to remove the players 's' movement, as no action is taken
+
+    if (!(tolower(end) == tolower(start) && tolower(start) == 'h')){
+        //FOR HUMAN
+        if (tolower(start) == 'h') {
+            if (end == '*') { end = tolower(start); }
+            else if (tolower(end) == 'r') { end = tolower(start); }
+            else if (tolower(end) == 'h') {end = tolower(end); }
+            else { end = start; dead = false; }
         }
-        else if (tolower(end) == 'r') {
-            end = tolower(start);
-            //plus death of the R if not already
-        }
-        else if (end == 'H') {
-            end = tolower(end);
-        }
-        else {
-            end = start;
-            dead = false;
+        //FOR ROBOT
+        else if (tolower(start) == 'r') {
+            if (end == '*') { end = tolower(start); }
+            else if (end == 'H') { end = tolower(end); }//will be h
+            else if (tolower(end) == 'r') { end = tolower(end); } //will be r
+            else { end = start; dead = false; }
         }
         start = ' ';
     }
+    
     return dead;
 }
-
 char find_him(vector <int> player_pos, vector <int> R_pos){
     char action;
     if (player_pos[0] == R_pos[0]) { //check if they are in the same line
@@ -51,12 +58,12 @@ char find_him(vector <int> player_pos, vector <int> R_pos){
             else { action = 'w'; }
     }
     else if (player_pos[0] > R_pos[0]) {
-            if (player_pos[1] < R_pos[1]) { action= 'q'; }
-            else { action = 'e'; }
+            if (player_pos[1] < R_pos[1]) { action= 'z'; }
+            else { action = 'c'; }
     }
     else {
-            if (player_pos[1] < R_pos[1]) { action = 'z'; }
-            else { action = 'c'; }
+            if (player_pos[1] < R_pos[1]) { action = 'q'; }
+            else { action = 'e'; }
     }
     return action;
 }
@@ -65,6 +72,24 @@ void checkErrors(int correct) {
     if (correct == 0){}
     else if (correct == 1) { cout << "chilla boy u'll die" << endl; }  //text in case certain death
     else if (correct == 2){cout << "Insert a valid input this time morron" << endl; } //in case the user is schtoopid
+}
+bool you_lose(vector <vector< char>> map, vector <int> player_pos){ //LOSE CONDITION
+    if (map[player_pos[0]][player_pos[1]] == 'h') {
+        outMap(map, map.size(), map[0].size());
+        return true;
+    }
+    return false;
+}
+bool you_win(vector <bool> life) {
+    bool win = true;
+
+    //CHECK IF ALL ROBOTS ARE DEAD
+    for (int ID = 0; ID < life.size(); ID++) {
+        if (life[ID] == true) {
+            win = false;
+        }
+    }
+    return win;
 }
 
 void actionCheck(vector <vector<char>> map, char action,  bool &game, string &state, bool &move, int &correct ,int &l, int &c) { //check if player can move
@@ -122,13 +147,13 @@ void actionCheck(vector <vector<char>> map, char action,  bool &game, string &st
         correct = 2;
         break;
     }
-    /*if (tolower(map[pos[0] + l][pos[1] + c]) == 'r' || map[pos[0] + l][pos[1] + c] == '*') { bool dead = true; }*/
+    
 }
 
-void duplicate(vector <bool> &life, vector <vector<int>> pos, int ID) {
+void remove_copy(vector <bool> &life, vector <vector<int>> pos, int ID) {
     for (int c = 0; c < pos.size(); c++) {
-        if (pos[ID] == pos[c] && c != ID) {
-            life[c] = false;
+        if (c != ID && pos[ID] == pos[c]) {
+            life[c] = life[ID];
         }
     }
 }
@@ -142,14 +167,13 @@ void outMap(vector <vector<char>> map, int n_lines, int n_colums) { //outputs th
     }
 }
 
-void readMap(vector <vector<char>> map, int n_lines,int n_colums,vector <int> &player_pos, vector <vector<int>>& robots_pos) {     //outputs the map on the buffer
+void readMap(vector <vector<char>> map, int n_lines,int n_colums,vector <int> &player_pos, vector <vector<int>>& robots_pos) {     
 
     for (int l = 0; l < n_lines; l++) {
         for (int c = 0; c < n_colums; c++) { 
             if (tolower(map[l][c]) == 'h') { player_pos = { l , c }; }               // take player position
             else if (tolower(map[l][c]) == 'r') { robots_pos.push_back( { l, c }); } // take robots position
         }
-        cout << endl;
     }
 }
 
@@ -220,7 +244,7 @@ void checkInput(int &variable){  //maybe redo this function with a loop instead 
 }
 
 void menu(int &inst) {        // menu function
-    //system("CLS"); //clears the user's view
+    
     cout << "Menu \nPlease choose an option" << endl;
     cout << "1) Rules \n2) Play \n0) Exit" << endl << endl;
     checkInput(inst);   //need to check input
@@ -256,7 +280,6 @@ void showRules(string& state) {
 }
 
 void play(string& state) {
-    //system("CLS"); //clears the user's view
     int N_MAZE;
     cout << "Pick game Maze. Press 0 to return to the menu." << endl;
     checkInput(N_MAZE);     //need to check input
@@ -275,14 +298,14 @@ void play(string& state) {
     int new_l, new_c;
     bool move; //checks if he can moves
     int correct; //
-
+    
     readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
     vector <vector<int>> R_pos = robots_pos;  // ordered pair (lines, colum)
     vector <bool> RLivesMatter;
-    for (int c = 0; c < robots_pos.size(); c++) { RLivesMatter.push_back(true); }
 
+    for (int c = 0; c < robots_pos.size(); c++) { RLivesMatter.push_back(true); }
+    
     while (game) {
-        //system("CLS"); //clears the user's view
         //readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
         outMap(map, map.size(), map[0].size());
 
@@ -304,9 +327,7 @@ void play(string& state) {
                 actionCheck(map, action_char, game, state, move, correct, new_l, new_c);
             }
 
-            /*if (move) { done = true; }*/
             if (!move) {
-                //system("CLS"); //clears the user's view
                 //readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
                 outMap(map, map.size(), map[0].size());
                 checkErrors(correct);
@@ -315,35 +336,48 @@ void play(string& state) {
         if (!game) break; //checks if it is to continue 
 
         switch_pos(map[player_pos[0]][player_pos[1]], map[player_pos[0] + new_l][player_pos[1] + new_c]);  //switch position between player(H) and the new position
-        readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+        readMap(map, map.size(), map[0].size(), player_pos, robots_pos); //update player_pos
+        
         //finished player movement
 
+        //ROBOTS MOVEMENT
         for (int ID = 0; ID < RLivesMatter.size(); ID++) {
+            /*cout << "  {"<<R_pos[ID][0] << " , " << R_pos[ID][0] << "}  " << endl;*/
             if (RLivesMatter[ID]) {
                 actionCheck(map, find_him(player_pos, R_pos[ID]), game, state, move, correct, new_l, new_c);
                 if (switch_pos(map[R_pos[ID][0]][R_pos[ID][1]], map[R_pos[ID][0] + new_l][R_pos[ID][1] + new_c])) {
                     RLivesMatter[ID] = false;
                 }
+                R_pos[ID][0] += new_l;
+                R_pos[ID][1] += new_c;
                 if (!RLivesMatter[ID]) {
-                    duplicate(RLivesMatter, R_pos, ID);
+                    remove_copy(RLivesMatter, R_pos, ID);
                 }
             }
         }
+        
+        readMap(map, map.size(), map[0].size(), player_pos, robots_pos); //update player_pos
+        
+      
+        //LOSING CONDITION
+        if (you_lose(map, player_pos)){
+            cout << "YOU LOST, SHAME ON YOU!!!" << endl;
+            state == "menu";
+            return;
+        }
 
-        //play
-
+        //SAVE ON FILE RECORD AND SHOW WIN MESSAGE
+        if (you_win(RLivesMatter)){
+            cout << "YOU WON, YOU ARE BLOODY AMAZING MY GUY!" << endl;
+            //leaderboard();
+            state == "menu";
+            return;
+        }  
     }
 }
-
 void exit(bool &running) {
     running = false;
 }
-
-// void readInst(string& inst) {           // funcion that reads intruction for the nex iteration of the loop
-//     cout << "Next instruction" << endl; // standart text for read instruction, we must change that
-//     cin >> inst;                        //need to check input
-//     cout << endl;
-// }
 
 
 int main()   //main function
@@ -363,7 +397,6 @@ int main()   //main function
         else if (game_state == "play") { play(game_state); }
 
         else if (game_state == "exit") { exit(running); }
-
 
         //readInst(Inst);
     }//end main fuction
