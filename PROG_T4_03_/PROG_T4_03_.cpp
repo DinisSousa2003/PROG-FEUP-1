@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <vector> //vectors
 #include <iomanip>
+#include <ctime>
 
 
 using namespace std; // makes all the code more readable
@@ -70,8 +71,8 @@ char find_him(vector <int> player_pos, vector <int> R_pos){
 
 void checkErrors(int correct) {
     if (correct == 0){}
-    else if (correct == 1) { cout << "chilla boy u'll die" << endl; }  //text in case certain death
-    else if (correct == 2){cout << "Insert a valid input this time morron" << endl; } //in case the user is schtoopid
+    else if (correct == 1){cout << "You can't go against dead robots" << endl; }
+    else if (correct == 2){cout << "Insert a valid input this time ('h' if you need help)" << endl; } //in case the user is schtoopid
 }
 bool you_lose(vector <vector< char>> map, vector <int> player_pos){ //LOSE CONDITION
     if (map[player_pos[0]][player_pos[1]] == 'h') {
@@ -90,6 +91,10 @@ bool you_win(vector <bool> life) {
         }
     }
     return win;
+}
+
+void deadRobotCheck(char nextPos, int &correct, bool &move){
+    if (nextPos == 'r') {correct = 1; move = false; }
 }
 
 void actionCheck(vector <vector<char>> map, char action,  bool &game, string &state, bool &move, int &correct ,int &l, int &c) { //check if player can move
@@ -135,7 +140,7 @@ void actionCheck(vector <vector<char>> map, char action,  bool &game, string &st
         game = false;
         move = true;
         state = "menu";
-        //correct = 0;
+        correct = 0;
         break;
     case 'h':
         help();
@@ -183,7 +188,7 @@ void pad_str(string &num_map, int spaces_to_fill = 0, char filling = '0'){
       num_map.insert(num_map.begin(), spaces_to_fill - num_map.length(), filling);
 }
 
-vector<vector<char>> importMap(int num_map){
+vector<vector<char>> importMap(int num_map, bool &mapGood){
     ifstream inStream;
 
     string str_num_map = to_string(num_map);
@@ -194,12 +199,16 @@ vector<vector<char>> importMap(int num_map){
 
     //NO MAP WITH THIS NUMBER
     if(inStream.fail()){                    //need a loop to check input
-        cerr << "There is no map with that number." << endl;
-        exit(1);
+        cout << "There is no map with that number." << endl;
+        mapGood = false;
+        return {}; //kill the fuction
     }
     //WHEN EVERYTHING IS OKAY!
     else{
-        //SIZE OF MAP //first line on map.txt
+
+        mapGood = true;
+
+        //SIZE OF MAP first line on map.txt
         int height, lenght;
         char k;
         inStream >> height >> k >> lenght;
@@ -220,27 +229,33 @@ vector<vector<char>> importMap(int num_map){
 }
 
 void menuGameState(int Inst, string &gamestate){
-    if (Inst == 0) gamestate = "exit";
+    if (Inst == 0) gamestate = "end";
     if (Inst == 1) gamestate = "rules";
     if (Inst == 2) gamestate = "play";
 }
 
 //we can redo this function for strings too...
 void checkInput(int &variable){  //maybe redo this function with a loop instead recursion
-    cin >> variable;
-    if (cin.fail()){
-        if (cin.eof()){
-            cin.clear(); //clears error flags
-            cin.ignore(10000, '\n'); //clears buffer
-            cout << "FATAL ERROR AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH";
-        }
-        else{
+    
+    bool good = false;
+
+    do{
+        cin >> variable;
+        if (cin.fail()) {
+            if (cin.eof()) {
+                cin.clear(); //clears error flags
+                cin.ignore(10000, '\n'); //clears buffer
+                cout << "FATAL ERROR AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH";
+                exit(1);
+            }
+            else{
             cin.clear(); //clears error flags
             cin.ignore(10000, '\n'); //clears buffer
             cout << "You wrote something invalid, we were looking for an integer!" << endl;
-            checkInput(variable); //if it's wrong, it asks again
+            }
         }
-    }
+        else{good = true;}
+    }while (!good);
 }
 
 void menu(int &inst) {        // menu function
@@ -281,11 +296,19 @@ void showRules(string& state) {
 
 void play(string& state) {
     int N_MAZE;
-    cout << "Pick game Maze. Press 0 to return to the menu." << endl;
-    checkInput(N_MAZE);     //need to check input
-    if (N_MAZE == 0) { state = "menu"; return ; } //return to menu
+    bool mapGood;
+    vector<vector<char>> map;
 
-    vector<vector<char>> map = importMap(N_MAZE);
+    //IMPORT MAP, DO WHILE MAP DOES NOT EXIST
+    do{
+        cout << "Pick game Maze. Press 0 to return to the menu." << endl;
+        checkInput(N_MAZE);     //need to check input
+        if (N_MAZE == 0) { state = "menu"; return; } //return to menu
+        map = importMap(N_MAZE, mapGood);
+    } while (!mapGood);
+
+    
+    
     vector<vector<int>> robots_pos;
     vector <int> player_pos;
 
@@ -304,6 +327,8 @@ void play(string& state) {
     vector <bool> RLivesMatter;
 
     for (int c = 0; c < robots_pos.size(); c++) { RLivesMatter.push_back(true); }
+
+    unsigned long int T1 = time(NULL);
     
     while (game) {
         //readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
@@ -325,6 +350,7 @@ void play(string& state) {
             else {
                 action_char = action.at(0);
                 actionCheck(map, action_char, game, state, move, correct, new_l, new_c);
+                if (move && correct == 1) {deadRobotCheck(map[player_pos[0] + new_l][player_pos[1] + new_c], correct, move);} //move = false, correct = 1
             }
 
             if (!move) {
@@ -368,14 +394,38 @@ void play(string& state) {
 
         //SAVE ON FILE RECORD AND SHOW WIN MESSAGE
         if (you_win(RLivesMatter)){
-            cout << "YOU WON, YOU ARE BLOODY AMAZING MY GUY!" << endl;
-            //leaderboard();
+            
+            unsigned long int T2 = time(NULL);
+            outMap(map, map.size(), map[0].size());
+            cout << "YOU WON, YOU ARE BLOODY AMAZING MY GUY!" << "  time: "<< T2-T1 << endl;
+
+            string name;
+            action_char = ' '; //reciclar é boa prática?
+            move = false;
+            while(!move){
+                cout << "Qual is o teu name?" << endl; //must change
+                getline(cin, name);
+                cout << "\nO teu nome is " << name << ", right? (Y/N)" << endl;
+                bool done = false;
+                while (!done) {
+                    cin >> action_char; 
+                    cout <<endl;
+                    //check input
+                    if (tolower(action_char) == 'y') { move = true; done = true; }
+                    else if (tolower(action_char) == 'n') { move = false; done = true; }
+                    else { cout << "Y/N"<<endl; done = false; } ;
+                }
+            }
+
+            //leaderboard(name);
+
             state == "menu";
+            
             return;
         }  
     }
 }
-void exit(bool &running) {
+void end(bool &running) {
     running = false;
 }
 
@@ -396,7 +446,7 @@ int main()   //main function
 
         else if (game_state == "play") { play(game_state); }
 
-        else if (game_state == "exit") { exit(running); }
+        else if (game_state == "end") { end(running); }
 
         //readInst(Inst);
     }//end main fuction
