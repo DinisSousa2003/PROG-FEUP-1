@@ -34,8 +34,11 @@ void menu(int &inst);
 void showRules(string& state);
 void play(string& state);
 void end(bool &running);
+void check_eof();
 
 //-----------------------CODE GOES HERE -----------------------------------------------------------------------------------------------
+
+void check_eof() {if (cin.eof()) {exit(1);}}
 
 //USED FOR LEADERBOARDS
 struct Player {
@@ -69,7 +72,7 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
             getline(win_file_input, lines);
 
             player.name = lines.substr(0, 15);
-            player.time = stoi(lines.substr(18, lines.size())); //reads to the end of the line
+            player.time = stoi(lines.substr(18, lines.size() - 18)); //reads to the end of the line
 
             player_vector.push_back(player);
         }
@@ -78,25 +81,38 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
         win_file_input.close();
 
         //CURRENT PLAYER
-        player.name = name_now;
+        player.name = pad_str(name_now, 15, ' ', true);
         player.time = time_now;
 
+        //INSERTED FLAG
+        bool inserted = false;
+
+        //Insert player in correct pos
         for (unsigned long int i = 0; i < player_vector.size(); i++){
             if (time_now < player_vector[i].time){
                 player_vector.insert(player_vector.begin() + i, player);
+                inserted = true;
                 break;
             }
         }
+        
+        //Player is in last pos
+        if (!inserted) {player_vector.push_back(player);}
 
         //WRITE    
-        
+        ofstream win_file_output(str_N_MAZE);
+        win_file_output << "Player          - Time";
+        win_file_output << "\n----------------------";
+        for (int c = 0; c < player_vector.size(); c++){
+            win_file_output <<"\n"<< player_vector[c].name << " - " << pad_str(to_string(player_vector[c].time), 4, ' ', false);
+        }
     }
     else{
         //FILE DOES NOT EXIST, THEN IT'S THE RECORD
         ofstream win_file_output(str_N_MAZE);
-        win_file_output << "Player          - Time\n";
-        win_file_output << "---------------------\n";
-        win_file_output << pad_str(name_now,15, ' ', true) << " - " << time_now;
+        win_file_output << "Player          - Time";
+        win_file_output << "\n---------------------";
+        win_file_output << "\n"<< pad_str(name_now,15, ' ', true) << " - " << pad_str(to_string(time_now), 4, ' ', false);
         win_file_output.close();
     }
 }
@@ -336,23 +352,21 @@ void menuGameState(int Inst, string &gamestate){
 void checkInput(int &variable){  //maybe redo this function with a loop instead recursion
     
     bool good = false;
+    string line; 
 
     do{
-        cin >> variable;
-        if (cin.fail()) {
-            if (cin.eof()) {
-                cin.clear(); //clears error flags
-                cin.ignore(10000, '\n'); //clears buffer
-                cout << "FATAL ERROR AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH";
-                exit(1);
-            }
-            else{
+        getline(cin, line);
+        check_eof(); 
+        if(cin.fail()){
+     
+            cin.ignore(10000, '\n'); //clears buffer
+            cout << "You wrote something invalid, we were looking for an integer!" << endl; cin.ignore(10000, '\n'); //clears buffer
+        }
+        else{
             cin.clear(); //clears error flags
             cin.ignore(10000, '\n'); //clears buffer
             cout << "You wrote something invalid, we were looking for an integer!" << endl;
-            }
         }
-        else{good = true;}
     }while (!good);
 }
 
@@ -397,7 +411,7 @@ void play(string& state) {
     bool mapGood;
     vector<vector<char>> map;
 
-    //IMPORT MAP, DO WHILE MAP DOES NOT EXIST
+    //IMPORT MAP, DO WHILE MAP IS NOT FOUND
     do{
         cout << "Pick game Maze. Press 0 to return to the menu." << endl;
         checkInput(N_MAZE);     //need to check input
@@ -410,7 +424,7 @@ void play(string& state) {
     vector<vector<int>> robots_pos;
     vector <int> player_pos;
 
-    //play loop
+    //PLAY LOOP
     bool game = true;
     
     string action;
@@ -418,7 +432,7 @@ void play(string& state) {
     
     int new_l, new_c;
     bool move; //checks if he can moves
-    int correct; //
+    int correct; //flag for error message
     
     readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
     vector <vector<int>> R_pos = robots_pos;  // ordered pair (lines, colum)
