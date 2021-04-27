@@ -34,3 +34,11 @@ TO DO:
 ->implement function to work with cntrl-z
 ->input must work only one at a time (no premoves and shit)
 ->start working on nerdy robot movement
+
+BOTH: (27/04/2021)
+
+Write in the file new players.
+ctrl + z in all the inputs
+sort all code for ez reading
+change some strings
+comment and analize

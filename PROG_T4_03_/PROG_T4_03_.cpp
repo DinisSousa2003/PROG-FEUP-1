@@ -1,3 +1,5 @@
+//---------------------IMPORT LIBRARIES---------------------------------------------------------------------------------------------
+
 #include <iostream>
 #include <string>
 #include <fstream> //handle files
@@ -9,9 +11,95 @@
 
 using namespace std; // makes all the code more readable
 
+//-------------------FUNCTION DECLARATION------------------------------------------------------------------------------------------
+
 void outMap(vector <vector<char>> map, int n_lines, int n_colums);
+string pad_str(string num_map, int spaces_to_fill, char filling, bool reverse);
+void leaderboard(string name, unsigned long int time, int N_MAZE);
+void help();
+bool switch_pos(char& start, char& end);
+char find_him(vector <int> player_pos, vector <int> R_pos);
+void checkErrors(int correct);
+bool you_lose(vector <vector< char>> map, vector <int> player_pos);
+bool you_win(vector <bool> life);
+void deadRobotCheck(char nextPos, int &correct, bool &move);
+void actionCheck(vector <vector<char>> map, char action,  bool &game, string &state, bool &move, int &correct ,int &l, int &c);
+void remove_copy(vector <bool> &life, vector <vector<int>> pos, int ID);
+void outMap(vector <vector<char>> map, int n_lines, int n_colums);
+void readMap(vector <vector<char>> map, int n_lines,int n_colums,vector <int> &player_pos, vector <vector<int>>& robots_pos);
+vector<vector<char>> importMap(int num_map, bool &mapGood);
+void menuGameState(int Inst, string &gamestate);
+void checkInput(int &variable);
+void menu(int &inst);
+void showRules(string& state);
+void play(string& state);
+void end(bool &running);
 
+//-----------------------CODE GOES HERE -----------------------------------------------------------------------------------------------
 
+//USED FOR LEADERBOARDS
+struct Player {
+    string name;
+    unsigned long int time;
+};
+
+void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
+    //MAZE_XX_WINNERS.txt
+
+    //1 -> 01 (etc...)
+    string str_N_MAZE =  pad_str(to_string(N_MAZE) , 2, '0', false);
+    
+    str_N_MAZE = "MAZE_" + str_N_MAZE + "_WINNERS.txt";
+    
+    ifstream win_file_input(str_N_MAZE);
+
+    if (win_file_input){
+        //FILE EXIST, OPPENED SUCESSFULLY
+        string lines;
+        
+        //GET RID OF FIST TWO LINES, AS THEY ARE USELESS
+        getline(win_file_input, lines);
+        getline(win_file_input, lines);
+
+        vector<Player> player_vector;
+        Player player;
+
+        while(!win_file_input.eof()){
+
+            getline(win_file_input, lines);
+
+            player.name = lines.substr(0, 15);
+            player.time = stoi(lines.substr(18, lines.size())); //reads to the end of the line
+
+            player_vector.push_back(player);
+        }
+
+        //READ DONE
+        win_file_input.close();
+
+        //CURRENT PLAYER
+        player.name = name_now;
+        player.time = time_now;
+
+        for (unsigned long int i = 0; i < player_vector.size(); i++){
+            if (time_now < player_vector[i].time){
+                player_vector.insert(player_vector.begin() + i, player);
+                break;
+            }
+        }
+
+        //WRITE    
+        
+    }
+    else{
+        //FILE DOES NOT EXIST, THEN IT'S THE RECORD
+        ofstream win_file_output(str_N_MAZE);
+        win_file_output << "Player          - Time\n";
+        win_file_output << "---------------------\n";
+        win_file_output << pad_str(name_now,15, ' ', true) << " - " << time_now;
+        win_file_output.close();
+    }
+}
 
 void help() {  //outputs possible actions
     cout << "Movement: \n\n" << "NW: Q\t\tN: W\t\tNE: E\n"
@@ -182,17 +270,25 @@ void readMap(vector <vector<char>> map, int n_lines,int n_colums,vector <int> &p
     }
 }
 
-void pad_str(string &num_map, int spaces_to_fill = 0, char filling = '0'){
+string pad_str(string text, int spaces_to_fill = 0, char filling = '0', bool reverse = false){
     
-    if (spaces_to_fill > num_map.length())
-      num_map.insert(num_map.begin(), spaces_to_fill - num_map.length(), filling);
+    //reverse = False --> Stuff from left
+    if (reverse == false) {
+        if (spaces_to_fill > text.length()) { text.insert(text.begin(), spaces_to_fill - text.length(), filling);}
+    }
+    //reverse = True --> Stuff from right
+    else {
+        if (spaces_to_fill > text.length()) { text.append(spaces_to_fill - text.length(), filling); }
+    }
+    
+    return text;
 }
 
 vector<vector<char>> importMap(int num_map, bool &mapGood){
     ifstream inStream;
 
-    string str_num_map = to_string(num_map);
-    pad_str(str_num_map, 2, '0');
+    // 2 -> 02, 1 -> 01, etc...
+    string str_num_map = pad_str(to_string(num_map) , 2, '0', false);
    
     string file_name = "MAPS/MAZE_" + str_num_map + ".txt";
     inStream.open(file_name);
@@ -201,6 +297,7 @@ vector<vector<char>> importMap(int num_map, bool &mapGood){
     if(inStream.fail()){                    //need a loop to check input
         cout << "There is no map with that number." << endl;
         mapGood = false;
+        inStream.close();
         return {}; //kill the fuction
     }
     //WHEN EVERYTHING IS OKAY!
@@ -224,6 +321,7 @@ vector<vector<char>> importMap(int num_map, bool &mapGood){
                 map_vec[line][colum] = lines.at(colum);
             }
         }
+        inStream.close();
         return map_vec;
     }
 }
@@ -396,9 +494,12 @@ void play(string& state) {
         if (you_win(RLivesMatter)){
             
             unsigned long int T2 = time(NULL);
-            outMap(map, map.size(), map[0].size());
-            cout << "YOU WON, YOU ARE BLOODY AMAZING MY GUY!" << "  time: "<< T2-T1 << endl;
+            unsigned long int time = T2 - T1;
 
+            outMap(map, map.size(), map[0].size());
+            cout << "YOU WON, YOU ARE BLOODY AMAZING MY GUY!" << "  time: "<< time << endl;
+
+            //INPUT NAME
             string name;
             action_char = ' '; //reciclar é boa prática?
             move = false;
@@ -407,9 +508,12 @@ void play(string& state) {
                 getline(cin, name);
                 cout << "\nO teu nome is " << name << ", right? (Y/N)" << endl;
                 bool done = false;
+                
                 while (!done) {
                     cin >> action_char; 
-                    cout <<endl;
+                    cin.ignore(10000, '\n');
+                    //ignore if more than one letter
+                    cout << endl;
                     //check input
                     if (tolower(action_char) == 'y') { move = true; done = true; }
                     else if (tolower(action_char) == 'n') { move = false; done = true; }
@@ -417,10 +521,8 @@ void play(string& state) {
                 }
             }
 
-            //leaderboard(name);
-
-            state == "menu";
-            
+            leaderboard(name, time, N_MAZE);
+            state = "menu";
             return;
         }  
     }
