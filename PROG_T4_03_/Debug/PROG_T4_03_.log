@@ -1,16 +1,16 @@
 ﻿  PROG_T4_03_.cpp
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(48,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(69,28): warning C4018: '>': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(73,28): warning C4018: '>': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(87,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(95,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(336,25): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(351,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(424,27): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(437,27): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(502,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(505,26): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(546,29): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(572,19): warning C4834: descartando o valor retornado da função com o atributo 'nodiscard'
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(580,34): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
-  PROG_T4_03_.vcxproj -> C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\Debug\PROG_T4_03_.exe
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(48,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(69,28): warning C4018: '>': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(73,28): warning C4018: '>': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(87,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(95,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(344,25): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(359,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(432,27): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(445,27): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(510,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(513,26): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(560,29): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(594,34): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
+  LINK : C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\Debug\PROG_T4_03_.exe não encontrado ou não compilado pelo o último link incremental; executando link completo
+  PROG_T4_03_.vcxproj -> C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\Debug\PROG_T4_03_.exe

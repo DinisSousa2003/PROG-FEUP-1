@@ -13,7 +13,7 @@ using namespace std; // makes all the code more readable
 
 //-------------------FUNCTION DECLARATION------------------------------------------------------------------------------------------
 
-void actionCheck(vector <vector<char>> map, char action, bool& game, string& state, bool& move, int& correct, int& l, int& c); 
+void actionCheck(vector <vector<char>> map, char action, bool& game, string& state, bool& move, int& correct, int& l, int& c);
 void check_eof();
 void checkErrors(int correct);
 void checkInput(int& variable);
@@ -59,20 +59,20 @@ string cut(string s) {
 }
 
 //check_eof() -> ENDS THE GAME IF CTRL-Z (WINDOWS) OR CTRL-D (LINUX)
-void check_eof() {if (cin.eof()) {exit(1);}}
+void check_eof() { if (cin.eof()) { exit(1); } }
 
 //pad_str() -> FILLS WITH A CERTAIN CHAR (filling) ON THE RIGHT OR LEFT (choose with reverse), TO A CERTAIN NUMBER OF CHARACTERS (spaces_to_fill)
-string pad_str(string text, int spaces_to_fill = 0, char filling = '0', bool reverse = false){
-    
+string pad_str(string text, int spaces_to_fill = 0, char filling = '0', bool reverse = false) {
+
     //reverse = False --> Stuff from left
     if (reverse == false) {
-        if (spaces_to_fill > text.length()) { text.insert(text.begin(), spaces_to_fill - text.length(), filling);}
+        if (spaces_to_fill > text.length()) { text.insert(text.begin(), spaces_to_fill - text.length(), filling); }
     }
     //reverse = True --> Stuff from right
     else {
         if (spaces_to_fill > text.length()) { text.append(spaces_to_fill - text.length(), filling); }
     }
-    
+
     return text;
 }
 
@@ -93,18 +93,26 @@ bool is_int(string s)
 //empty() -> RETURNS true IF THE LINE IS ONLY MADE UP OF WHITE SPACES ('\t' or ' ')
 bool empty(string s) {
     for (int i = 0; i < s.length(); i++)
-        if (s.at(i) != ' ' && s.at(i)!= '\t') { return false; }
+        if (s.at(i) != ' ' && s.at(i) != '\t') { return false; }
     return true;
 }
 
+bool special_chars(string s) {
+    if (s.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_ \t") != string::npos)
+    {
+        return true;
+    }
+    return false;
+}
+
 //checkInput() -> USES THE FUNCTIONS empty() AND is_int() TO ASK THE USER FOR AN INTEGER
-void checkInput(int& variable) {  
+void checkInput(int& variable) {
     string line;
     bool good = false;
     getline(cin, line);
     check_eof();
-    while ((empty(line) || !is_int(line))) {
-        if (!empty(line)) { cout << "You wrote something invalid! (We are looking for an integer)" << endl; } 
+    while ((empty(line) || special_chars(line) || !is_int(line))) {
+        if (!empty(line)) { cout << "You wrote something invalid! (We are looking for an integer)" << endl; }
         getline(cin, line);
         check_eof();
 
@@ -125,11 +133,11 @@ bool switch_pos(char& start, char& end) {
     bool dead = true;
 
     //The if is used to remove the players 's' movement, as no action is taken
-    if (!(tolower(end) == tolower(start) && tolower(start) == 'h')){
+    if (!(tolower(end) == tolower(start) && tolower(start) == 'h')) {
         //FOR HUMAN
         if (tolower(start) == 'h') {
             //collides with fence '*' and dies
-            if (end == '*') { end = tolower(start); } 
+            if (end == '*') { end = tolower(start); }
             //colides with robot and dies
             else if (tolower(end) == 'r') { end = tolower(start); }
             //dont know...
@@ -144,39 +152,39 @@ bool switch_pos(char& start, char& end) {
             //collides with human, kills human
             else if (end == 'H') { end = tolower(end); }
             //collides with robot (dead/alive), dies and stacks
-            else if (tolower(end) == 'r') { end = tolower(end); } 
+            else if (tolower(end) == 'r') { end = tolower(end); }
             //normal move
             else { end = start; dead = false; }
         }
         start = ' ';
     }
-    
+
     return dead;
 }
 
 //find_him -> USED FOR ROBOTS TO FIND THE HUMAN, AND CHASE HIM
 
-char find_him(vector <int> player_pos, vector <int> R_pos){
+char find_him(vector <int> player_pos, vector <int> R_pos) {
     char action;
 
     //check if they are in the same line
-    if (player_pos[0] == R_pos[0]) { 
-       if (player_pos[1] < R_pos[1]) { action = 'a'; }
-       else { action = 'd'; }
+    if (player_pos[0] == R_pos[0]) {
+        if (player_pos[1] < R_pos[1]) { action = 'a'; }
+        else { action = 'd'; }
     }
     //check if they are in the same column
-    else if (player_pos[1] == R_pos[1]) { 
-            if (player_pos[0] > R_pos[0]) { action= 'x'; }
-            else { action = 'w'; }
+    else if (player_pos[1] == R_pos[1]) {
+        if (player_pos[0] > R_pos[0]) { action = 'x'; }
+        else { action = 'w'; }
     }
     //if they are not in the same line or column, the movement is done diagonally
     else if (player_pos[0] > R_pos[0]) {
-            if (player_pos[1] < R_pos[1]) { action= 'z'; }
-            else { action = 'c'; }
+        if (player_pos[1] < R_pos[1]) { action = 'z'; }
+        else { action = 'c'; }
     }
     else {
-            if (player_pos[1] < R_pos[1]) { action = 'q'; }
-            else { action = 'e'; }
+        if (player_pos[1] < R_pos[1]) { action = 'q'; }
+        else { action = 'e'; }
     }
     return action;
 }
@@ -184,11 +192,11 @@ char find_him(vector <int> player_pos, vector <int> R_pos){
 //actionCheck -> USED FOR HUMAN AND ROBOTS, DOES CHAR TO MOVEMENT AND RETURNS FLAGS WICH INDICATE IF THE MOVEMENT IS VALID (move)
 //IN CASE IT ISN'T, THE FLAG CORRECT DECIDES THE ERROR MESSAGE (the error message is used only for the player, as our robots don't do mistakes).
 
-void actionCheck(vector <vector<char>> map, char action,  bool &game, string &state, bool &move, int &correct ,int &l, int &c) { //check if player can move
+void actionCheck(vector <vector<char>> map, char action, bool& game, string& state, bool& move, int& correct, int& l, int& c) { //check if player can move
     correct = 1;
     move = true;
     switch (tolower(action)) {
-    case 'q': 
+    case 'q':
         l = -1; c = -1;
         break;
 
@@ -239,14 +247,14 @@ void actionCheck(vector <vector<char>> map, char action,  bool &game, string &st
         correct = 2;
         break;
     }
-    
+
 }
 
 //checkErrors -> PRINTS THE APPROPRIATE ERROR MESSAGE
 void checkErrors(int correct) {
-    if (correct == 0){}
-    else if (correct == 1){cout << "You can't go against dead robots" << endl; }
-    else if (correct == 2){cout << "Insert a valid input this time ('h' if you need help)" << endl; } 
+    if (correct == 0) {}
+    else if (correct == 1) { cout << "You can't go against dead robots" << endl; }
+    else if (correct == 2) { cout << "Insert a valid input this time ('h' if you need help)" << endl; }
 
 }
 //-----------------------------MAP-----------------------------------------------------------------------------------------------
@@ -262,35 +270,35 @@ void outMap(vector <vector<char>> map, int n_lines, int n_colums) { //outputs th
 }
 
 //readMap() -> SAVES PLAYER POSITION AND THE VARIOUS ROBOTS POSITIONS
-void readMap(vector <vector<char>> map, int n_lines,int n_colums,vector <int> &player_pos, vector <vector<int>>& robots_pos) {     
+void readMap(vector <vector<char>> map, int n_lines, int n_colums, vector <int>& player_pos, vector <vector<int>>& robots_pos) {
 
     for (int l = 0; l < n_lines; l++) {
-        for (int c = 0; c < n_colums; c++) { 
+        for (int c = 0; c < n_colums; c++) {
             if (tolower(map[l][c]) == 'h') { player_pos = { l , c }; }               // take player position
-            else if (tolower(map[l][c]) == 'r') { robots_pos.push_back( { l, c }); } // take robots position
+            else if (tolower(map[l][c]) == 'r') { robots_pos.push_back({ l, c }); } // take robots position
         }
     }
 }
 
 //importMap() -> SEARCHES FOR MAP, IF IT EXISTS LOADS IT AND RETURNS IT, IF NOT FLAG mapGood = false
-vector<vector<char>> importMap(int num_map, bool &mapGood){
+vector<vector<char>> importMap(int num_map, bool& mapGood) {
     ifstream inStream;
 
     // 2 -> 02, 1 -> 01, etc...
-    string str_num_map = pad_str(to_string(num_map) , 2, '0', false);
-   
+    string str_num_map = pad_str(to_string(num_map), 2, '0', false);
+
     string file_name = "MAZE_" + str_num_map + ".txt";
     inStream.open(file_name);
 
     //NO MAP WITH THIS NUMBER
-    if(inStream.fail()){                    
+    if (inStream.fail()) {
         cout << "There is no map with that number." << endl;
         mapGood = false; //loop to check input
         inStream.close();
         return {}; //kill the fuction
     }
     //WHEN EVERYTHING IS OKAY!
-    else{
+    else {
 
         mapGood = true;
 
@@ -300,15 +308,15 @@ vector<vector<char>> importMap(int num_map, bool &mapGood){
         inStream >> height >> k >> lenght;
 
         //INITIALIZE VECTOR
-        vector<vector<char>> map_vec(height, vector<char> (lenght, ' '));
+        vector<vector<char>> map_vec(height, vector<char>(lenght, ' '));
         string lines;
-        
+
         //LOAD MAP
         getline(inStream, lines);
-        for(int line = 0; line < height; line++){
+        for (int line = 0; line < height; line++) {
             getline(inStream, lines);
-            for(int colum = 0; colum < lenght; colum++){
-                
+            for (int colum = 0; colum < lenght; colum++) {
+
                 map_vec[line][colum] = lines.at(colum);
             }
         }
@@ -320,7 +328,7 @@ vector<vector<char>> importMap(int num_map, bool &mapGood){
 //---------------------------------------GAME LOGIC-----------------------------------------------------------------------------------
 
 //you_lose() -> IF THE HUMAN IS IN THE DEAD STATE ('h'), YOU HAVE LOST
-bool you_lose(vector <vector< char>> map, vector <int> player_pos){ //LOSE CONDITION
+bool you_lose(vector <vector< char>> map, vector <int> player_pos) { //LOSE CONDITION
     if (map[player_pos[0]][player_pos[1]] == 'h') {
         outMap(map, map.size(), map[0].size());
         return true;
@@ -342,12 +350,12 @@ bool you_win(vector <bool> life) {
 }
 
 //deadRobotCheck -> USED TO ACTIVATE FLAG FOR PLAYER MOVEMENT, AS IT CAN'T GO AGAINST DEAD ROBOTS
-void deadRobotCheck(char nextPos, int &correct, bool &move){
-    if (nextPos == 'r') {correct = 1; move = false; }
+void deadRobotCheck(char nextPos, int& correct, bool& move) {
+    if (nextPos == 'r') { correct = 1; move = false; }
 }
 
 //kill_stackedRobots -> KILLS STACKED ROBOTS (WHEN TWO ROBOTS ARE IN THE SAME PLACE, THEY ARE DEAD)
-void kill_stackedRobots(vector <bool> &life, vector <vector<int>> pos, int ID) {
+void kill_stackedRobots(vector <bool>& life, vector <vector<int>> pos, int ID) {
     for (int c = 0; c < pos.size(); c++) {
         if (c != ID && pos[ID] == pos[c]) {
             life[c] = life[ID];
@@ -368,16 +376,16 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
     //MAZE_XX_WINNERS.txt
 
     //1 -> 01 (etc...)
-    string str_N_MAZE =  pad_str(to_string(N_MAZE) , 2, '0', false);
-    
+    string str_N_MAZE = pad_str(to_string(N_MAZE), 2, '0', false);
+
     str_N_MAZE = "MAZE_" + str_N_MAZE + "_WINNERS.txt";
-    
+
     ifstream win_file_input(str_N_MAZE);
 
-    if (win_file_input){
+    if (win_file_input) {
         //FILE EXIST, OPPENED SUCESSFULLY
         string lines;
-        
+
         //GET RID OF FIST TWO LINES, AS THEY ARE USELESS
         getline(win_file_input, lines);
         getline(win_file_input, lines);
@@ -385,7 +393,7 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
         vector<Player> player_vector;
         Player player;
 
-        while(!win_file_input.eof()){
+        while (!win_file_input.eof()) {
 
             getline(win_file_input, lines);
 
@@ -406,23 +414,23 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
         bool inserted = false;
 
         //Insert player in correct pos
-        for (unsigned long int i = 0; i < player_vector.size(); i++){
-            if (time_now < player_vector[i].time){
+        for (unsigned long int i = 0; i < player_vector.size(); i++) {
+            if (time_now < player_vector[i].time) {
                 player_vector.insert(player_vector.begin() + i, player);
                 inserted = true;
                 break;
             }
         }
-        
+
         //Player is in last pos
-        if (!inserted) {player_vector.push_back(player);}
+        if (!inserted) { player_vector.push_back(player); }
 
         //WRITE TO FILE 
         ofstream win_file_output(str_N_MAZE);
         win_file_output << "Player          - Time";
         win_file_output << "\n-----------------------";
-        for (int c = 0; c < player_vector.size(); c++){
-            win_file_output <<"\n"<< player_vector[c].name << " - " << pad_str(to_string(player_vector[c].time), 4, ' ', false);
+        for (int c = 0; c < player_vector.size(); c++) {
+            win_file_output << "\n" << player_vector[c].name << " - " << pad_str(to_string(player_vector[c].time), 4, ' ', false);
         }
         win_file_output.close();
 
@@ -431,21 +439,21 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
         cout << "******Leaderboard******" << endl;
         cout << "***********************" << endl;
         cout << endl;
-        cout << "!!!!MAZE " + pad_str(to_string(N_MAZE) , 2, '0', false) + " WINNERS!!!!" << endl;
+        cout << "!!!!MAZE " + pad_str(to_string(N_MAZE), 2, '0', false) + " WINNERS!!!!" << endl;
         cout << "Player          - Time";
         cout << "\n---------------------";
-        for (int c = 0; c < player_vector.size(); c++){
-            cout <<"\n"<< player_vector[c].name << " - " << pad_str(to_string(player_vector[c].time), 4, ' ', false);
+        for (int c = 0; c < player_vector.size(); c++) {
+            cout << "\n" << player_vector[c].name << " - " << pad_str(to_string(player_vector[c].time), 4, ' ', false);
         }
         cout << "\n***********************" << endl;
     }
-    else{
+    else {
         //FILE DOES NOT EXIST, THEN IT'S THE RECORD
         //WRITE TO FILE
         ofstream win_file_output(str_N_MAZE);
         win_file_output << "Player          - Time";
         win_file_output << "\n---------------------";
-        win_file_output << "\n"<< pad_str(name_now,15, ' ', true) << " - " << pad_str(to_string(time_now), 4, ' ', false);
+        win_file_output << "\n" << pad_str(name_now, 15, ' ', true) << " - " << pad_str(to_string(time_now), 4, ' ', false);
         win_file_output.close();
 
         //WRITE TO CONSOLE
@@ -453,10 +461,10 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
         cout << "******Leaderboard******" << endl;
         cout << "***********************" << endl;
         cout << endl;
-        cout << "!!!!MAZE " + pad_str(to_string(N_MAZE) , 2, '0', false) + " WINNERS!!!!" << endl;
+        cout << "!!!!MAZE " + pad_str(to_string(N_MAZE), 2, '0', false) + " WINNERS!!!!" << endl;
         cout << "Player          - Time";
         cout << "\n---------------------";
-        cout << "\n"<< pad_str(name_now,15, ' ', true) << " - " << pad_str(to_string(time_now), 4, ' ', false);
+        cout << "\n" << pad_str(name_now, 15, ' ', true) << " - " << pad_str(to_string(time_now), 4, ' ', false);
         cout << "\n***********************" << endl;
     }
 }
@@ -472,28 +480,28 @@ void play(string& state) {
     vector<vector<char>> map;
 
     //IMPORT MAP, DO WHILE MAP IS NOT FOUND
-    do{
+    do {
         cout << "Pick game Maze. Press 0 to return to the menu." << endl;
         checkInput(N_MAZE);     //need to check input
         if (N_MAZE == 0) { state = "menu"; return; } //return to menu
         map = importMap(N_MAZE, mapGood);
     } while (!mapGood);
 
-    
-    
+
+
     vector<vector<int>> robots_pos;
     vector <int> player_pos;
 
     //PLAY LOOP
     bool game = true;
-    
+
     string action;
     char action_char;
-    
+
     int new_l, new_c;
     bool move; //checks if he can moves
     int correct; //flag for error message
-    
+
     readMap(map, map.size(), map[0].size(), player_pos, robots_pos); //loads player and robots position
     vector <vector<int>> R_pos = robots_pos;  // ordered pair (lines, colum)
     vector <bool> RLivesMatter; //if robots are dead or alive
@@ -503,13 +511,13 @@ void play(string& state) {
 
     //START TIMER
     unsigned long int T1 = time(NULL);
-    
+
     while (game) {
         cout << endl;
         outMap(map, map.size(), map[0].size());
 
         //game play start here
-        cout << "Take action: (press 'h' to get help)  "; 
+        cout << "Take action: (press 'h' to get help)  ";
 
         move = false;
 
@@ -520,13 +528,13 @@ void play(string& state) {
             check_eof();
 
             //IF THE USER RIGHTS MORE THAN ONE CHAR, THE ACTION IS WRONG
-            if (action.length() > 1) {
+            if (action.length() != 1) {
                 correct = 2;
             }
             else {
                 action_char = action.at(0);
                 actionCheck(map, action_char, game, state, move, correct, new_l, new_c);
-                if (move && correct == 1) {deadRobotCheck(map[player_pos[0] + new_l][player_pos[1] + new_c], correct, move);} //move = false, correct = 1
+                if (move && correct == 1) { deadRobotCheck(map[player_pos[0] + new_l][player_pos[1] + new_c], correct, move); } //move = false, correct = 1
             }
 
             if (!move) {
@@ -539,12 +547,18 @@ void play(string& state) {
 
         switch_pos(map[player_pos[0]][player_pos[1]], map[player_pos[0] + new_l][player_pos[1] + new_c]);  //switch position between player(H) and the new position
         readMap(map, map.size(), map[0].size(), player_pos, robots_pos); //update player_pos
-        
+
+        if (you_lose(map, player_pos)) {
+            cout << "YOU LOST, SHAME ON YOU :(" << endl;
+            state = "menu";
+            return;
+        }
+
         //finished player movement
 
         //ROBOTS MOVEMENT
         for (int ID = 0; ID < RLivesMatter.size(); ID++) {
-            
+
             //if the robot is alive:
             if (RLivesMatter[ID]) {
                 actionCheck(map, find_him(player_pos, R_pos[ID]), game, state, move, correct, new_l, new_c);
@@ -562,20 +576,20 @@ void play(string& state) {
                 }
             }
         }
-        
+
         //update player_pos
-        readMap(map, map.size(), map[0].size(), player_pos, robots_pos); 
-        
+        readMap(map, map.size(), map[0].size(), player_pos, robots_pos);
+
         //LOSING CONDITION
-        if (you_lose(map, player_pos)){
+        if (you_lose(map, player_pos)) {
             cout << "YOU LOST, SHAME ON YOU :(" << endl;
-            state == "menu";
+            state = "menu";
             return;
         }
 
         //SAVE ON FILE RECORD AND SHOW WIN MESSAGE
-        if (you_win(RLivesMatter)){
-            
+        if (you_win(RLivesMatter)) {
+
             //END TIMER, CALCULATE INTERVAL
             unsigned long int T2 = time(NULL);
             unsigned long int time = T2 - T1;
@@ -583,15 +597,15 @@ void play(string& state) {
             cout << endl;
             outMap(map, map.size(), map[0].size());
             cout << "---------------------------------------------------" << endl;
-            cout << "YOU WON, YOU ARE BLOODY AMAZING MY GUY!" << "  time: "<< time << " seconds"<< endl;
+            cout << "YOU WON, YOU ARE BLOODY AMAZING MY GUY!" << "  time: " << time << " seconds" << endl;
             cout << "---------------------------------------------------" << endl;
             cout << endl;
 
             //INPUT NAME
             string name;
-            char y_n_char = ' '; 
+            char y_n_char = ' ';
             bool name_done = false;
-            while(!name_done){
+            while (!name_done) {
                 cout << "Now, what did you say your name was? (max. 15 chars)" << endl; //must change
                 getline(cin, name);
                 check_eof();
@@ -599,14 +613,15 @@ void play(string& state) {
 
                 //CHECK IF NAME SIZE <= 15
                 if (name.size() > 15) {
-                    cout << "Your name is to big, choose something smaller."<<endl;
-                    continue;}
-    
+                    cout << "Your name is to big, choose something smaller." << endl;
+                    continue;
+                }
+
                 cout << "\nYour name is " << name << ", right? (Y/N)" << endl;
                 bool done = false;
-                
+
                 while (!done) {
-                    cin >> y_n_char; 
+                    cin >> y_n_char;
                     check_eof();
                     cin.ignore(10000, '\n');
                     //ignore if more than one letter
@@ -614,14 +629,14 @@ void play(string& state) {
                     //check input
                     if (tolower(y_n_char) == 'y') { name_done = true; done = true; }
                     else if (tolower(y_n_char) == 'n') { name_done = false; done = true; }
-                    else { cout << "Y/N"<<endl; done = false; } ;
+                    else { cout << "Y/N" << endl; done = false; };
                 }
             }
 
             leaderboard(name, time, N_MAZE);
             state = "menu";
             return;
-        }  
+        }
     }
 }
 
@@ -630,12 +645,12 @@ void play(string& state) {
 //help() -> SHOWS BASIC COMMANDS WHEN PLAYER PRESSES 'h' WHILE PLAYING
 void help() {  //outputs possible actions
     cout << "\nMovement: \n\n" << "NW: Q\t\tN: W\t\tNE: E\n"
-    "W: A\t\tSTAY: S\t\tE: D\n"
-    "SW: Z\t\tS: X\t\tSE: C\n" << endl;
+        "W: A\t\tSTAY: S\t\tE: D\n"
+        "SW: Z\t\tS: X\t\tSE: C\n" << endl;
 
     cout << "Other commands: \n\n" << "0: Return to menu\n"
-    "h: Quick help\n"
-    "CRTL-Z (or CRTL-D on Linux): End game\n" << endl;
+        "h: Quick help\n"
+        "CRTL-Z (or CRTL-D on Linux): End game\n" << endl;
 
     //char(169) is the cophyright
     cout << char(169) << " DS & MALVA" << endl;
@@ -643,7 +658,7 @@ void help() {  //outputs possible actions
 }
 
 //menuGameState() -> DECYPHERS NUMBERS FROM MENU INTO GAMESTATE
-void menuGameState(int Inst, string &gamestate){
+void menuGameState(int Inst, string& gamestate) {
     if (Inst == 0) gamestate = "end";
     if (Inst == 1) gamestate = "rules";
     if (Inst == 2) gamestate = "play";
@@ -651,22 +666,22 @@ void menuGameState(int Inst, string &gamestate){
 
 //showRules() -> EXTENDED RULES, AVAILABLE ON THE MENU
 void showRules(string& state) {
-    
+
     int back = 1;
 
     //GAME RULES
     cout << "\n-> Rules: \n\n" << "The player ('H') is placed in a maze made up of high-voltage fences and posts ('*').\n"
-"There are also some interceptor robots ('R') that will try to destroy the player.\n"
-"If the player touches the maze or any of these robots, that is the end of the game, and the player ('h')!.\n"
-"The robots are also destroyed when they touch the fences/posts or when they collide with each other. \n"
-"Every time the player moves in any direction (horizontally, vertically, or diagonally) to a contiguous cell, each robot\n"
-"moves one cell closer to the new player's location, in whichever direction is the shortest path.\n"
-"The robots have no vision sensors but they have an accurate odour sensor that allows them to follow the player!\n"
-"There is one hope: make the robots hit the maze or each other. If all of them are destroyed ('r'), the player wins.\n " << endl;
+        "There are also some interceptor robots ('R') that will try to destroy the player.\n"
+        "If the player touches the maze or any of these robots, that is the end of the game, and the player ('h')!.\n"
+        "The robots are also destroyed when they touch the fences/posts or when they collide with each other. \n"
+        "Every time the player moves in any direction (horizontally, vertically, or diagonally) to a contiguous cell, each robot\n"
+        "moves one cell closer to the new player's location, in whichever direction is the shortest path.\n"
+        "The robots have no vision sensors but they have an accurate odour sensor that allows them to follow the player!\n"
+        "There is one hope: make the robots hit the maze or each other. If all of them are destroyed ('r'), the player wins.\n " << endl;
 
     cout << "-> Movement: \n\n" << "NW: Q\t\tN: W\t\tNE: E\n"
-    "W: A\t\tSTAY: S\t\tE: D\n"
-    "SW: Z\t\tS: X\t\tSE: C\n" << endl;
+        "W: A\t\tSTAY: S\t\tE: D\n"
+        "SW: Z\t\tS: X\t\tSE: C\n" << endl;
 
     cout << "-> Useful information: \n\n" << "You can leave the game at any given moment by pressing CTRL-Z (or CTRL-D if you are on Linux)\n" << endl;
 
@@ -681,7 +696,7 @@ void showRules(string& state) {
 }
 
 //menu() -> PRINTS MENU AND CHECKS INSTRUCTION
-void menu(int &inst) {
+void menu(int& inst) {
     cout << "\n\n------------------------" << endl;
     cout << "----------Menu----------" << endl;
     cout << "------------------------" << endl;
@@ -693,7 +708,7 @@ void menu(int &inst) {
     cout << "0) Exit" << endl;
     cout << endl;
 
-    checkInput(inst);   
+    checkInput(inst);
     //do it while it is not correct
     while (!(0 <= inst && inst <= 2)) {
         cout << "Invalid input: only '0' , '1' or '2' are accepted" << endl;
@@ -703,7 +718,7 @@ void menu(int &inst) {
 }
 
 //end() -> running = false, shuts down program, by ending main loop
-void end(bool &running) {
+void end(bool& running) {
     running = false;
 }
 
@@ -717,13 +732,13 @@ int main()   //main function
     int Inst;
     cout << "Welcome, to the..." << endl;
     cout << "----------------------------------------------------" << endl;
-    cout << "-----------------ROBOTS GAME------------------------" << endl; 
+    cout << "-----------------ROBOTS GAME------------------------" << endl;
     cout << "----------------------------------------------------" << endl;
     cout << endl;
-    
+
     while (running) { // game main loop
-        
-        if (game_state == "menu") { menu(Inst); menuGameState(Inst, game_state);}
+
+        if (game_state == "menu") { menu(Inst); menuGameState(Inst, game_state); }
 
         else if (game_state == "rules") { showRules(game_state); }
 
