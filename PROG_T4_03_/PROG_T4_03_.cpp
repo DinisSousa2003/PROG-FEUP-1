@@ -619,7 +619,7 @@ bool empty(string s) {
     return true;
 }
 
-void checkInput(int& variable) {  //maybe redo this function with a loop instead recursion
+void checkInput(int& variable) {  
     string line;
     bool good = false;
     getline(cin, line);
