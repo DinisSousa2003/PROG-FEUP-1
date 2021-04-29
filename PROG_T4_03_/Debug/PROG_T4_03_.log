@@ -1,16 +1,16 @@
 ﻿  PROG_T4_03_.cpp
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(52,28): warning C4018: '>': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(56,28): warning C4018: '>': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(69,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(80,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(88,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(329,25): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(344,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(417,27): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(430,27): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(495,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(498,26): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(536,29): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(562,19): warning C4834: descartando o valor retornado da função com o atributo 'nodiscard'
-C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(570,34): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(48,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(69,28): warning C4018: '>': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(73,28): warning C4018: '>': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(87,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(95,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(336,25): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(351,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(424,27): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(437,27): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(502,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(505,26): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(546,29): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(572,19): warning C4834: descartando o valor retornado da função com o atributo 'nodiscard'
+C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\PROG_T4_03_.cpp(580,34): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
   PROG_T4_03_.vcxproj -> C:\Users\Utilizador\Desktop\PROG\PROG_T4_03_\Debug\PROG_T4_03_.exe

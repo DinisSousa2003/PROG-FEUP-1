@@ -17,6 +17,7 @@ void actionCheck(vector <vector<char>> map, char action, bool& game, string& sta
 void check_eof();
 void checkErrors(int correct);
 void checkInput(int& variable);
+string cut(string s);
 void deadRobotCheck(char nextPos, int& correct, bool& move);
 bool empty(string s);
 void end(bool& running);
@@ -41,6 +42,22 @@ bool you_win(vector <bool> life);
 
 //-----------------------INPUT AND STRING MANIPULATION AND CONTROL---------------------------------------------------------------------
 
+string cut(string s) {
+    int foo = 0;
+    //REMOVE SPACES FROM THE LEFT ("    w   " -> "w  ")
+    for (int i = 0; i < s.size(); i++)
+        if (s.at(i) != ' ' && s.at(i) != '\t') { foo = i; break; }
+    s = s.substr(foo, s.size() - foo);
+
+    //REMOVE SPACES FROM THE RIGHT ("w  " -> "w")
+    for (int i = s.size() - 1; i >= 0; i--) {
+        if (s.at(i) != ' ' && s.at(i) != '\t') { foo = i; break; }
+    }
+    s = s.substr(0, foo + 1);
+
+    return s;
+}
+
 //check_eof() -> ENDS THE GAME IF CTRL-Z (WINDOWS) OR CTRL-D (LINUX)
 void check_eof() {if (cin.eof()) {exit(1);}}
 
@@ -64,17 +81,7 @@ string pad_str(string text, int spaces_to_fill = 0, char filling = '0', bool rev
 //"1 2", "aaa" - invalid (false)
 bool is_int(string s)
 {
-    int foo;
-    //REMOVE SPACES FROM THE LEFT ("    34   " -> "    34")
-    for (int i = 0; i < s.size(); i++)
-        if (s.at(i) != ' ' && s.at(i) != '\t') { foo = i; break; }
-    s = s.substr(foo, s.size() - foo);
-    
-    //REMOVE SPACES FROM THE RIGHT ("    34" -> "34")
-    for (int i = s.size()-1; i >=0; i--) {
-        if (s.at(i) != ' ' && s.at(i) != '\t') { foo = i; break; }
-    }
-    s = s.substr(0, foo +1);
+    s = cut(s);
 
     //CHECKS IF THE CHARACTERS ARE ALL DIGITS ("34" -> ALL DIGITS -> true)
     for (int i = 0; i < s.size(); i++) {
@@ -413,7 +420,7 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
         //WRITE TO FILE 
         ofstream win_file_output(str_N_MAZE);
         win_file_output << "Player          - Time";
-        win_file_output << "\n----------------------";
+        win_file_output << "\n-----------------------";
         for (int c = 0; c < player_vector.size(); c++){
             win_file_output <<"\n"<< player_vector[c].name << " - " << pad_str(to_string(player_vector[c].time), 4, ' ', false);
         }
@@ -424,13 +431,13 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
         cout << "******Leaderboard******" << endl;
         cout << "***********************" << endl;
         cout << endl;
-        cout << "!!MAZE " + pad_str(to_string(N_MAZE) , 2, '0', false) + "WINNERS!!" << endl;
+        cout << "!!!!MAZE " + pad_str(to_string(N_MAZE) , 2, '0', false) + " WINNERS!!!!" << endl;
         cout << "Player          - Time";
         cout << "\n---------------------";
         for (int c = 0; c < player_vector.size(); c++){
             cout <<"\n"<< player_vector[c].name << " - " << pad_str(to_string(player_vector[c].time), 4, ' ', false);
         }
-        cout << "***********************" << endl;
+        cout << "\n***********************" << endl;
     }
     else{
         //FILE DOES NOT EXIST, THEN IT'S THE RECORD
@@ -442,15 +449,15 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
         win_file_output.close();
 
         //WRITE TO CONSOLE
-        cout << "-----------------------" << endl;
-        cout << "------Leaderboard------" << endl;
-        cout << "-----------------------" << endl;
+        cout << "***********************" << endl;
+        cout << "******Leaderboard******" << endl;
+        cout << "***********************" << endl;
         cout << endl;
-        cout << "!!MAZE " + pad_str(to_string(N_MAZE) , 2, '0', false) + "WINNERS!!" << endl;
+        cout << "!!!!MAZE " + pad_str(to_string(N_MAZE) , 2, '0', false) + " WINNERS!!!!" << endl;
         cout << "Player          - Time";
         cout << "\n---------------------";
         cout << "\n"<< pad_str(name_now,15, ' ', true) << " - " << pad_str(to_string(time_now), 4, ' ', false);
-        cout << "\n-----------------------" << endl;
+        cout << "\n***********************" << endl;
     }
 }
 
@@ -498,6 +505,7 @@ void play(string& state) {
     unsigned long int T1 = time(NULL);
     
     while (game) {
+        cout << endl;
         outMap(map, map.size(), map[0].size());
 
         //game play start here
@@ -508,6 +516,7 @@ void play(string& state) {
         //check for input
         while (!move) {
             getline(cin, action);
+            action = cut(action);
             check_eof();
 
             //IF THE USER RIGHTS MORE THAN ONE CHAR, THE ACTION IS WRONG
@@ -521,6 +530,7 @@ void play(string& state) {
             }
 
             if (!move) {
+                cout << endl;
                 outMap(map, map.size(), map[0].size());
                 checkErrors(correct);
             }
@@ -558,7 +568,7 @@ void play(string& state) {
         
         //LOSING CONDITION
         if (you_lose(map, player_pos)){
-            cout << "YOU LOST, SHAME ON YOU!!!" << endl;
+            cout << "YOU LOST, SHAME ON YOU :(" << endl;
             state == "menu";
             return;
         }
@@ -570,24 +580,29 @@ void play(string& state) {
             unsigned long int T2 = time(NULL);
             unsigned long int time = T2 - T1;
 
+            cout << endl;
             outMap(map, map.size(), map[0].size());
-            cout << "YOU WON, YOU ARE BLOODY AMAZING MY GUY!" << "  time: "<< time << endl;
+            cout << "---------------------------------------------------" << endl;
+            cout << "YOU WON, YOU ARE BLOODY AMAZING MY GUY!" << "  time: "<< time << " seconds"<< endl;
+            cout << "---------------------------------------------------" << endl;
+            cout << endl;
 
             //INPUT NAME
             string name;
             char y_n_char = ' '; 
             bool name_done = false;
             while(!name_done){
-                cout << "Qual is o teu name? (max. 15 chars)" << endl; //must change
+                cout << "Now, what did you say your name was? (max. 15 chars)" << endl; //must change
                 getline(cin, name);
                 check_eof();
+                cout << endl;
 
                 //CHECK IF NAME SIZE <= 15
                 if (name.size() > 15) {
                     cout << "Your name is to big, choose something smaller."<<endl;
                     continue;}
     
-                cout << "\nO teu nome is " << name << ", right? (Y/N)" << endl;
+                cout << "\nYour name is " << name << ", right? (Y/N)" << endl;
                 bool done = false;
                 
                 while (!done) {
@@ -614,13 +629,17 @@ void play(string& state) {
 
 //help() -> SHOWS BASIC COMMANDS WHEN PLAYER PRESSES 'h' WHILE PLAYING
 void help() {  //outputs possible actions
-    cout << "Movement: \n\n" << "NW: Q\t\tN: W\t\tNE: E\n"
+    cout << "\nMovement: \n\n" << "NW: Q\t\tN: W\t\tNE: E\n"
     "W: A\t\tSTAY: S\t\tE: D\n"
     "SW: Z\t\tS: X\t\tSE: C\n" << endl;
 
     cout << "Other commands: \n\n" << "0: Return to menu\n"
     "h: Quick help\n"
     "CRTL-Z (or CRTL-D on Linux): End game\n" << endl;
+
+    //char(169) is the cophyright
+    cout << char(169) << " DS & MALVA" << endl;
+    cout << endl;
 }
 
 //menuGameState() -> DECYPHERS NUMBERS FROM MENU INTO GAMESTATE
@@ -636,7 +655,7 @@ void showRules(string& state) {
     int back = 1;
 
     //GAME RULES
-    cout << "Rules: \n\n" << "The player ('H') is placed in a maze made up of high-voltage fences and posts ('*').\n"
+    cout << "\n-> Rules: \n\n" << "The player ('H') is placed in a maze made up of high-voltage fences and posts ('*').\n"
 "There are also some interceptor robots ('R') that will try to destroy the player.\n"
 "If the player touches the maze or any of these robots, that is the end of the game, and the player ('h')!.\n"
 "The robots are also destroyed when they touch the fences/posts or when they collide with each other. \n"
@@ -645,11 +664,14 @@ void showRules(string& state) {
 "The robots have no vision sensors but they have an accurate odour sensor that allows them to follow the player!\n"
 "There is one hope: make the robots hit the maze or each other. If all of them are destroyed ('r'), the player wins.\n " << endl;
 
-    cout << "Movement: \n\n" << "NW: Q\t\tN: W\t\tNE: E\n"
+    cout << "-> Movement: \n\n" << "NW: Q\t\tN: W\t\tNE: E\n"
     "W: A\t\tSTAY: S\t\tE: D\n"
     "SW: Z\t\tS: X\t\tSE: C\n" << endl;
 
-    cout << "Useful information: \n\n" << "You can leave the game at any given moment by pressing CTRL-Z (or CTRL-D if you are on Linux)\n" << endl;
+    cout << "-> Useful information: \n\n" << "You can leave the game at any given moment by pressing CTRL-Z (or CTRL-D if you are on Linux)\n" << endl;
+
+    //char(169) is the cophyright
+    cout << char(169) << " DS & MALVA \n" << endl;
 
     while (back != 0) {
         cout << "(Press '0' to exit rules)" << endl;
