@@ -13,28 +13,29 @@ using namespace std; // makes all the code more readable
 
 //-------------------FUNCTION DECLARATION------------------------------------------------------------------------------------------
 
+void actionCheck(vector <vector<char>> map, char action, bool& game, string& state, bool& move, int& correct, int& l, int& c); 
+void check_eof();
+void checkErrors(int correct);
+void checkInput(int& variable);
+void deadRobotCheck(char nextPos, int& correct, bool& move);
+bool empty(string s);
+void end(bool& running);
+char find_him(vector <int> player_pos, vector <int> R_pos);
+void help();
+bool is_int(string s);
+vector<vector<char>> importMap(int num_map, bool& mapGood);
+void kill_stackedRobots(vector <bool>& life, vector <vector<int>> pos, int ID);
+void leaderboard(string name, unsigned long int time, int N_MAZE);
+void menu(int& inst);
+void menuGameState(int Inst, string& gamestate);
 void outMap(vector <vector<char>> map, int n_lines, int n_colums);
 string pad_str(string num_map, int spaces_to_fill, char filling, bool reverse);
-void leaderboard(string name, unsigned long int time, int N_MAZE);
-void help();
+void play(string& state);
+void readMap(vector <vector<char>> map, int n_lines, int n_colums, vector <int>& player_pos, vector <vector<int>>& robots_pos);
+void showRules(string& state);
 bool switch_pos(char& start, char& end);
-char find_him(vector <int> player_pos, vector <int> R_pos);
-void checkErrors(int correct);
 bool you_lose(vector <vector< char>> map, vector <int> player_pos);
 bool you_win(vector <bool> life);
-void deadRobotCheck(char nextPos, int &correct, bool &move);
-void actionCheck(vector <vector<char>> map, char action,  bool &game, string &state, bool &move, int &correct ,int &l, int &c);
-void kill_stackedRobots(vector <bool> &life, vector <vector<int>> pos, int ID);
-void outMap(vector <vector<char>> map, int n_lines, int n_colums);
-void readMap(vector <vector<char>> map, int n_lines,int n_colums,vector <int> &player_pos, vector <vector<int>>& robots_pos);
-vector<vector<char>> importMap(int num_map, bool &mapGood);
-void menuGameState(int Inst, string &gamestate);
-void checkInput(int &variable);
-void menu(int &inst);
-void showRules(string& state);
-void play(string& state);
-void end(bool &running);
-void check_eof();
 
 //-----------------------CODE GOES HERE -----------------------------------------------------------------------------------------------
 
@@ -43,6 +44,66 @@ void check_eof();
 //check_eof() -> ENDS THE GAME IF CTRL-Z (WINDOWS) OR CTRL-D (LINUX)
 void check_eof() {if (cin.eof()) {exit(1);}}
 
+//pad_str() -> FILLS WITH A CERTAIN CHAR (filling) ON THE RIGHT OR LEFT (choose with reverse), TO A CERTAIN NUMBER OF CHARACTERS (spaces_to_fill)
+string pad_str(string text, int spaces_to_fill = 0, char filling = '0', bool reverse = false){
+    
+    //reverse = False --> Stuff from left
+    if (reverse == false) {
+        if (spaces_to_fill > text.length()) { text.insert(text.begin(), spaces_to_fill - text.length(), filling);}
+    }
+    //reverse = True --> Stuff from right
+    else {
+        if (spaces_to_fill > text.length()) { text.append(spaces_to_fill - text.length(), filling); }
+    }
+    
+    return text;
+}
+
+//is_int() -> RETURNS true IF THE INPUT IS AN INTEGER
+//"1   ", "0", "     34     " - VALID (true)
+//"1 2", "aaa" - invalid (false)
+bool is_int(string s)
+{
+    int foo;
+    //REMOVE SPACES FROM THE LEFT ("    34   " -> "    34")
+    for (int i = 0; i < s.size(); i++)
+        if (s.at(i) != ' ' && s.at(i) != '\t') { foo = i; break; }
+    s = s.substr(foo, s.size() - foo);
+    
+    //REMOVE SPACES FROM THE RIGHT ("    34" -> "34")
+    for (int i = s.size()-1; i >=0; i--) {
+        if (s.at(i) != ' ' && s.at(i) != '\t') { foo = i; break; }
+    }
+    s = s.substr(0, foo +1);
+
+    //CHECKS IF THE CHARACTERS ARE ALL DIGITS ("34" -> ALL DIGITS -> true)
+    for (int i = 0; i < s.size(); i++) {
+        if (!(isdigit(s.at(i)))) { return false; }
+    }
+    return true;
+}
+
+//empty() -> RETURNS true IF THE LINE IS ONLY MADE UP OF WHITE SPACES ('\t' or ' ')
+bool empty(string s) {
+    for (int i = 0; i < s.length(); i++)
+        if (s.at(i) != ' ' && s.at(i)!= '\t') { return false; }
+    return true;
+}
+
+//checkInput() -> USES THE FUNCTIONS empty() AND is_int() TO ASK THE USER FOR AN INTEGER
+void checkInput(int& variable) {  
+    string line;
+    bool good = false;
+    getline(cin, line);
+    check_eof();
+    while ((empty(line) || !is_int(line))) {
+        if (!empty(line)) { cout << "You wrote something invalid! (We are looking for an integer)" << endl; } 
+        getline(cin, line);
+        check_eof();
+
+    }
+    variable = stoi(line);
+}
 
 //-------------------------------------------------------------------------------------------------------------------------------------
 //---------------------------GAME FUNCTIONS--------------------------------------------------------------------------------------------
@@ -349,21 +410,47 @@ void leaderboard(string name_now, unsigned long int time_now, int N_MAZE) {
         //Player is in last pos
         if (!inserted) {player_vector.push_back(player);}
 
-        //WRITE    
+        //WRITE TO FILE 
         ofstream win_file_output(str_N_MAZE);
         win_file_output << "Player          - Time";
         win_file_output << "\n----------------------";
         for (int c = 0; c < player_vector.size(); c++){
             win_file_output <<"\n"<< player_vector[c].name << " - " << pad_str(to_string(player_vector[c].time), 4, ' ', false);
         }
+        win_file_output.close();
+
+        //WRITE TO CONSOLE
+        cout << "***********************" << endl;
+        cout << "******Leaderboard******" << endl;
+        cout << "***********************" << endl;
+        cout << endl;
+        cout << "!!MAZE " + pad_str(to_string(N_MAZE) , 2, '0', false) + "WINNERS!!" << endl;
+        cout << "Player          - Time";
+        cout << "\n---------------------";
+        for (int c = 0; c < player_vector.size(); c++){
+            cout <<"\n"<< player_vector[c].name << " - " << pad_str(to_string(player_vector[c].time), 4, ' ', false);
+        }
+        cout << "***********************" << endl;
     }
     else{
         //FILE DOES NOT EXIST, THEN IT'S THE RECORD
+        //WRITE TO FILE
         ofstream win_file_output(str_N_MAZE);
         win_file_output << "Player          - Time";
         win_file_output << "\n---------------------";
         win_file_output << "\n"<< pad_str(name_now,15, ' ', true) << " - " << pad_str(to_string(time_now), 4, ' ', false);
         win_file_output.close();
+
+        //WRITE TO CONSOLE
+        cout << "-----------------------" << endl;
+        cout << "------Leaderboard------" << endl;
+        cout << "-----------------------" << endl;
+        cout << endl;
+        cout << "!!MAZE " + pad_str(to_string(N_MAZE) , 2, '0', false) + "WINNERS!!" << endl;
+        cout << "Player          - Time";
+        cout << "\n---------------------";
+        cout << "\n"<< pad_str(name_now,15, ' ', true) << " - " << pad_str(to_string(time_now), 4, ' ', false);
+        cout << "\n-----------------------" << endl;
     }
 }
 
@@ -421,6 +508,7 @@ void play(string& state) {
         //check for input
         while (!move) {
             getline(cin, action);
+            check_eof();
 
             //IF THE USER RIGHTS MORE THAN ONE CHAR, THE ACTION IS WRONG
             if (action.length() > 1) {
@@ -487,22 +575,30 @@ void play(string& state) {
 
             //INPUT NAME
             string name;
-            action_char = ' '; 
-            move = false;
-            while(!move){
-                cout << "Qual is o teu name?" << endl; //must change
+            char y_n_char = ' '; 
+            bool name_done = false;
+            while(!name_done){
+                cout << "Qual is o teu name? (max. 15 chars)" << endl; //must change
                 getline(cin, name);
+                check_eof();
+
+                //CHECK IF NAME SIZE <= 15
+                if (name.size() > 15) {
+                    cout << "Your name is to big, choose something smaller."<<endl;
+                    continue;}
+    
                 cout << "\nO teu nome is " << name << ", right? (Y/N)" << endl;
                 bool done = false;
                 
                 while (!done) {
-                    cin >> action_char; 
+                    cin >> y_n_char; 
+                    check_eof();
                     cin.ignore(10000, '\n');
                     //ignore if more than one letter
                     cout << endl;
                     //check input
-                    if (tolower(action_char) == 'y') { move = true; done = true; }
-                    else if (tolower(action_char) == 'n') { move = false; done = true; }
+                    if (tolower(y_n_char) == 'y') { name_done = true; done = true; }
+                    else if (tolower(y_n_char) == 'n') { name_done = false; done = true; }
                     else { cout << "Y/N"<<endl; done = false; } ;
                 }
             }
@@ -564,10 +660,19 @@ void showRules(string& state) {
 
 //menu() -> PRINTS MENU AND CHECKS INSTRUCTION
 void menu(int &inst) {
-    cout << "Menu \nPlease choose an option" << endl;
-    cout << "1) Rules \n2) Play \n0) Exit" << endl << endl;
-    checkInput(inst);   //need to check input
+    cout << "\n\n------------------------" << endl;
+    cout << "----------Menu----------" << endl;
+    cout << "------------------------" << endl;
     cout << endl;
+    cout << "Please choose an option:" << endl;
+
+    cout << "1) Rules" << endl;
+    cout << "2) Play" << endl;
+    cout << "0) Exit" << endl;
+    cout << endl;
+
+    checkInput(inst);   
+    //do it while it is not correct
     while (!(0 <= inst && inst <= 2)) {
         cout << "Invalid input: only '0' , '1' or '2' are accepted" << endl;
         checkInput(inst);   //need to check input
@@ -580,65 +685,19 @@ void end(bool &running) {
     running = false;
 }
 
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-string pad_str(string text, int spaces_to_fill = 0, char filling = '0', bool reverse = false){
-    
-    //reverse = False --> Stuff from left
-    if (reverse == false) {
-        if (spaces_to_fill > text.length()) { text.insert(text.begin(), spaces_to_fill - text.length(), filling);}
-    }
-    //reverse = True --> Stuff from right
-    else {
-        if (spaces_to_fill > text.length()) { text.append(spaces_to_fill - text.length(), filling); }
-    }
-    
-    return text;
-}
-
-
-
-bool is_int(string s)
-{
-    int foo;
-    for (int i = 0; i < s.size(); i++)
-        if (s.at(i) != ' ' && s.at(i) != '\t') { foo = i; break; }
-    s = s.substr(foo, s.size() - foo);
-    for (int i = s.size()-1; i >=0; i--) {
-        if (s.at(i) != ' ' && s.at(i) != '\t') { foo = i; break; }
-    }
-    s = s.substr(0, foo +1);
-    for (int i = 0; i < s.size(); i++) {
-        if (!(isdigit(s.at(i)))) { return false; }
-    }
-    return true;
-}
-
-bool empty(string s) {
-    for (int i = 0; i < s.length(); i++)
-        if (s.at(i) != ' ' && s.at(i)!= '\t') { return false; }
-    return true;
-}
-
-void checkInput(int& variable) {  
-    string line;
-    bool good = false;
-    getline(cin, line);
-    check_eof();
-    while ((empty(line) || !is_int(line))) {
-        if (!empty(line)) { cout << "You wrote something invalid! (We are looking for an integer)" << endl; } 
-        getline(cin, line);
-        check_eof();
-
-    }
-    variable = stoi(line);
-}
 
 int main()   //main function
 {
     bool running = true;
     string game_state = "menu"; //the game starts on the menu
     int Inst;
-    cout << "Welcome to this game names <inserir nome deste jogo>" << endl << endl; //need to check game's name
+    cout << "Welcome, to the..." << endl;
+    cout << "----------------------------------------------------" << endl;
+    cout << "-----------------ROBOTS GAME------------------------" << endl; 
+    cout << "----------------------------------------------------" << endl;
+    cout << endl;
     
     while (running) { // game main loop
         
