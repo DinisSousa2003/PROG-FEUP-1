@@ -1,16 +1,16 @@
 ﻿  PROG_T4_03_.cpp
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(48,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(69,28): warning C4018: '>': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(73,28): warning C4018: '>': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(87,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(95,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(344,25): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(359,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(432,27): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(445,27): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(510,23): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(513,26): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(560,29): warning C4018: '<': incompatibilidade de signed/unsigned
-C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(594,34): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(49,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(70,28): warning C4018: '>': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(74,28): warning C4018: '>': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(88,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(96,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(345,25): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(360,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(433,27): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(446,27): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(511,23): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(514,26): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(561,29): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\PROG_T4_03_.cpp(595,34): warning C4244: 'inicializando': conversão de 'time_t' para 'unsigned long', possível perda de dados
   LINK : C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\Debug\PROG_T4_03_.exe não encontrado ou não compilado pelo o último link incremental; executando link completo
   PROG_T4_03_.vcxproj -> C:\Users\Utilizador\Desktop\Project1-Prog\PROG_T4_03_\Debug\PROG_T4_03_.exe

@@ -34,6 +34,7 @@ string pad_str(string num_map, int spaces_to_fill, char filling, bool reverse);
 void play(string& state);
 void readMap(vector <vector<char>> map, int n_lines, int n_colums, vector <int>& player_pos, vector <vector<int>>& robots_pos);
 void showRules(string& state);
+bool special_chars(string s);
 bool switch_pos(char& start, char& end);
 bool you_lose(vector <vector< char>> map, vector <int> player_pos);
 bool you_win(vector <bool> life);
@@ -140,8 +141,6 @@ bool switch_pos(char& start, char& end) {
             if (end == '*') { end = tolower(start); }
             //colides with robot and dies
             else if (tolower(end) == 'r') { end = tolower(start); }
-            //dont know...
-            //else if (tolower(end) == 'h') {end = tolower(end); }
             //normal move
             else { end = start; dead = false; }
         }
@@ -150,7 +149,7 @@ bool switch_pos(char& start, char& end) {
             //collides with fence '*' and dies
             if (end == '*') { end = tolower(start); }
             //collides with human, kills human
-            else if (end == 'H') { end = tolower(end); }
+            else if (tolower(end) == 'h') { end = tolower(end); } 
             //collides with robot (dead/alive), dies and stacks
             else if (tolower(end) == 'r') { end = tolower(end); }
             //normal move
