@@ -27,6 +27,7 @@ bool is_int(string s);
 vector<vector<char>> importMap(int num_map, bool& mapGood);
 void kill_stackedRobots(vector <bool>& life, vector <vector<int>> pos, int ID);
 void leaderboard(string name, unsigned long int time, int N_MAZE);
+string lose_sentence();
 void menu(int& inst);
 void menuGameState(int Inst, string& gamestate);
 void outMap(vector <vector<char>> map, int n_lines, int n_colums);
@@ -38,6 +39,7 @@ bool special_chars(string s);
 bool switch_pos(char& start, char& end);
 bool you_lose(vector <vector< char>> map, vector <int> player_pos);
 bool you_win(vector <bool> life);
+string win_sentence();
 
 //-----------------------CODE GOES HERE -----------------------------------------------------------------------------------------------
 
@@ -361,7 +363,54 @@ void kill_stackedRobots(vector <bool>& life, vector <vector<int>> pos, int ID) {
         }
     }
 }
+//-----------------------RANDOM SENTENCES---------------------------------------------------------------------------------------------
+string win_sentence() {
+    srand(time(NULL));
+    int r = rand() % 4;
 
+    string answer;
+    switch (r) {
+    case 0:
+        answer = "YOU DID IT!! LET'S GOO0...";
+        break;
+    case 1:
+        answer = "YOU WON, YOU ARE BLOODY AMAZING MY GUY!";
+        break;
+    case 2:
+        answer = "I GUESS WE DID IT TO EASY. CONGRATULATIONS";
+        break;
+    case 3:
+        answer = "UNBELIEVABLE, YOU ARE AWESOME!!";
+        break;
+    default:
+        break;
+    }
+    return answer;
+}
+
+string lose_sentence() {
+    srand(time(NULL));
+    int r = rand() % 4;
+
+    string answer;
+    switch (r) {
+    case 0:
+        answer = "YOU LOST, SHAME ON YOU :(";
+        break;
+    case 1:
+        answer = "THAT WAS PRETTY BAD, YOU LOST!";
+        break;
+    case 2:
+        answer = "YOU LOST! GOOD LUCK NEXT TIME";
+        break;
+    case 3:
+        answer = "DO BETTER NEXT TIME";
+        break;
+    default:
+        break;
+    }
+    return answer;
+}
 //-----------------------LEADERBORDS---------------------------------------------------------------------------------------------------
 
 //USED FOR LEADERBOARDS
@@ -548,7 +597,7 @@ void play(string& state) {
         readMap(map, map.size(), map[0].size(), player_pos, robots_pos); //update player_pos
 
         if (you_lose(map, player_pos)) {
-            cout << "YOU LOST, SHAME ON YOU :(" << endl;
+            cout << lose_sentence() << endl;
             state = "menu";
             return;
         }
@@ -581,7 +630,7 @@ void play(string& state) {
 
         //LOSING CONDITION
         if (you_lose(map, player_pos)) {
-            cout << "YOU LOST, SHAME ON YOU :(" << endl;
+            cout << lose_sentence() << endl;
             state = "menu";
             return;
         }
@@ -596,7 +645,7 @@ void play(string& state) {
             cout << endl;
             outMap(map, map.size(), map[0].size());
             cout << "---------------------------------------------------" << endl;
-            cout << "YOU WON, YOU ARE BLOODY AMAZING MY GUY!" << "  time: " << time << " seconds" << endl;
+            cout << win_sentence() << "  time: " << time << " seconds" << endl;
             cout << "---------------------------------------------------" << endl;
             cout << endl;
 

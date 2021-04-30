@@ -1,7 +1,11 @@
 Player          - Time
 -----------------------
+123456789012345 -    4
+CAROL           -    4
 abreu o falso   -    5
+Carol           -    7
 lulu            -    8
+CAR             -    9
 o malva ser gay -   10
 o malva ser gay -   14
 putao maneta    -   19
