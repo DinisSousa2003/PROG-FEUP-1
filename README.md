@@ -1,4 +1,4 @@
-## PRO/MIEIC, 2020/21
+## PROG/MIEIC, 2020/21
 ## Programming - First Project
 
 ### Description
